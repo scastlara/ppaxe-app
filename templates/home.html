@@ -6,55 +6,72 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="page">
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand active" href="#">PPaxe</a>
+          <a class="navbar-brand" href="/">
+            PPaxe
+          </a>
         </div>
-        <ul class="nav navbar-nav">
-          <li><a href="#">Page 1</a></li>
-          <li><a href="#">Page 2</a></li>
-          <li><a href="#">Page 3</a></li>
+        <ul class="nav navbar-nav navbar-buttons">
+          <li class="active"><a href="#">Home</a></li>
+          <li><a href="#">Tutorial</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="https://compgen.bio.ub.edu">
+              <img class="compgen-logo" src="{{ url_for('static', filename='compgen-logo.png') }}"/>
+              CompGen
+            </a>
+          </li>
         </ul>
       </div>
     </nav>
     <div class="content">
+      <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
 
-
-
-      <!-- MAIN FORM -->
-      <div class="panel-group main-form">
-      <div class="panel panel-default">
-        <div class="panel-heading">Retrieve interactions from articles</div>
-        <div class="panel-body">
-          <form action="/" method="get">
-          <div class="form-group">
-            <label for="identifiers">Pubmed or PMC Identifiers:</label>
-            <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
+      <div class="bipanel">
+          <!-- MAIN FORM -->
+        <div class="panel-group main-form">
+          <div class="panel panel-warning">
+            <div class="panel-heading">Retrieve interactions from articles</div>
+            <div class="panel-body">
+              <form action="/" method="get">
+              <div class="form-group">
+                <label for="identifiers">Pubmed or PMC Identifiers:</label>
+                <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="radio-inline"><input type="radio" name="database" value="pubmed" checked>PubMed</label>
+                <label class="radio-inline"><input type="radio" name="database" value="pmc">PMC</label>
+              </div>
+              <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="radio-inline"><input type="radio" name="database" value="pubmed" checked>PubMed</label>
-            <label class="radio-inline"><input type="radio" name="database" value="pmc">PMC</label>
-          </div>
-          <button type="submit" class="btn btn-default">Submit</button>
-        </form>
         </div>
-      </div>
-    </div>
 
-    </div>
+        <!-- Quick Help-->
+        <div class="panel-group main-help">
+          <div class="panel panel-info">
+            <div class="panel-heading">Quick Help</div>
+            <div class="panel-body">
+            </div>
+          </div>
+        </div>
 
-    <!-- Results -->
-    {% block body %}
-      {% if identifiers %}
-        {{ identifiers }}
-        {{ database }}
-      {% endif %}
-    {% endblock %}
+    </div> <!--bipanel-->
 
+      <!-- Results -->
+      {% block body %}
+        {% if identifiers %}
+          {{ identifiers }}
+          {{ database }}
+        {% endif %}
+      {% endblock %}
     </div> <!--content-->
-  </div> <!--page-->
 
 <script type="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>

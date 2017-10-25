@@ -4,12 +4,46 @@
   margin-left: 15%;
   margin-right: 15%;
   padding: 5%;
+  height: 100%;
 }
 
 .main-form {
-    width: 60%;
+  display: inline-block;
+  width: 47.5%;
 }
 
-.page {
+.main-help {
+  display: inline-block;
+  margin-left: 2.5%;
+  float: right;
+  width: 47.5%;
+}
+
+.navbar-logo {
+  height: auto;
+}
+
+.logo {
+  display: inline-block;
+  width: 200px;
+  margin-bottom: 5%;
+}
+
+
+.compgen-logo {
+  height: 19px;
+}
+
+.navbar {
+  margin-right: 15%;
+  margin-left: 15%;
+}
+
+body {
+  min-height: 100%;
   background-color: #EAEAEA;
+}
+
+html {
+  height: 100%;
 }
