@@ -13,9 +13,8 @@ def home_form():
     Home of the ppaxe web application containing the form
     '''
     identifiers = str()
-    message     = str()
-    message = "GET request"
+    database    = str()
     if 'identifiers' in request.args:
         identifiers = request.args['identifiers']
-    print(identifiers)
-    return render_template('home.html', message=message, identifiers=identifiers)
+        database = request.args['database']
+    return render_template('home.html', identifiers=identifiers, database=database)

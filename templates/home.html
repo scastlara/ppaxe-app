@@ -1,20 +1,62 @@
-<!doctype html>
-<title>Flaskr</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>PPaxe</h1>
-  <div class=metanav>
-  </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PPaxe</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="page">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand active" href="#">PPaxe</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <li><a href="#">Page 1</a></li>
+          <li><a href="#">Page 2</a></li>
+          <li><a href="#">Page 3</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="content">
 
-  <form action="/" method="get">
-    <input type="text" name="identifiers">
-    <input type="submit" value="Submit">
-  </form>
-  {% block body %}
-    {{ message }}
 
-    {% if identifiers %}
-      {{ identifiers }}
-    {% endif %}
-  {% endblock %}
-</div>
+
+      <!-- MAIN FORM -->
+      <div class="panel-group main-form">
+      <div class="panel panel-default">
+        <div class="panel-heading">Retrieve interactions from articles</div>
+        <div class="panel-body">
+          <form action="/" method="get">
+          <div class="form-group">
+            <label for="identifiers">Pubmed or PMC Identifiers:</label>
+            <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="radio-inline"><input type="radio" name="database" value="pubmed" checked>PubMed</label>
+            <label class="radio-inline"><input type="radio" name="database" value="pmc">PMC</label>
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        </div>
+      </div>
+    </div>
+
+    </div>
+
+    <!-- Results -->
+    {% block body %}
+      {% if identifiers %}
+        {{ identifiers }}
+        {{ database }}
+      {% endif %}
+    {% endblock %}
+
+    </div> <!--content-->
+  </div> <!--page-->
+
+<script type="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
