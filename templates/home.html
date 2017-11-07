@@ -4,8 +4,9 @@
   <title>PPaxe</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 </head>
-<body>
+<body onload="myFunction()" style="margin:0;">
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -29,7 +30,8 @@
         </ul>
       </div>
     </nav>
-    <div class="content">
+    <div id="loader"></div>
+    <div style="display:none;" id="content" class="animate-bottom">
       <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
 
       <div class="bipanel">
@@ -38,14 +40,14 @@
           <div class="panel panel-warning">
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
-              <form action="/" method="get">
+              <form id="ppaxeform" action="/" method="get">
               <div class="form-group">
                 <label for="identifiers">Pubmed or PMC Identifiers:</label>
                 <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
               </div>
               <div class="form-group">
-                <label class="radio-inline"><input type="radio" name="database" value="pubmed" checked>PubMed</label>
-                <label class="radio-inline"><input type="radio" name="database" value="pmc">PMC</label>
+                <label class="radio-inline"><input type="radio" name="database" value="PUBMED" checked>PubMed</label>
+                <label class="radio-inline"><input type="radio" name="database" value="PMC">PMC</label>
               </div>
               <button type="submit" class="btn btn-default">Submit</button>
             </form>
@@ -64,16 +66,66 @@
 
     </div> <!--bipanel-->
 
+
       <!-- Results -->
-      {% block body %}
-        {% if identifiers %}
-          {{ identifiers }}
-          {{ database }}
-        {% endif %}
-      {% endblock %}
+      <div class="results">
+        {% block body %}
+          {% if error %}
+            <h3>Invalid PubMed identifiers</h3>
+          {% else %}
+            {% if nints != None %}
+            <hr>
+            <h2>Results</h2>
+              <!-- A search -->
+              {% if nints > 0 %}
+                <!-- With results -->
+                {{ sum_table|safe }}
+                <hr>
+                <h3>Interactions</h3>
+                {{ int_table|safe }}
+              {% else %}
+                No results
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endblock %}
+      </div>
     </div> <!--content-->
 
-<script type="javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#inttable').DataTable({
+      "order": [[ 0, "desc" ]]
+    });
+  });
+</script>
+
+<script>
+
+$(document).ready(function(){
+  $('#ppaxeform').submit(function( event ) {
+    document.getElementById("loader").style.display = "inline";
+    document.getElementById("content").style.display = "none";
+
+  });
+});
+
+</script>
+
+<script>
+var myVar;
+
+function myFunction() {
+    myVar = setTimeout(showPage, 0.01);
+}
+
+function showPage() {
+  document.getElementById("loader").style.display = "none";
+  document.getElementById("content").style.display = "inline-block";
+}
+</script>
 </body>
 </html>
