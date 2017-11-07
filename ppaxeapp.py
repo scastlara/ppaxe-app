@@ -1,6 +1,7 @@
 import os
 from ppaxe import core
 from ppaxe import report
+import re
 from ppaxe import PubMedQueryError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -29,7 +30,10 @@ def home_form():
         # Get Form parameters
         identifiers = request.args['identifiers']
         database = request.args['database']
-        identifiers = identifiers.split(",")
+        identifiers = re.split(",|\n|\r", identifiers)
+        identifiers = [ident for ident in identifiers if ident]
+        print(identifiers)
+        #identifiers = identifiers.split(",")
 
         # Get articles from Pubmed or PMC
         source = str()
