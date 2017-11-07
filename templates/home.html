@@ -87,32 +87,60 @@
           {% if error %}
             <h3>Invalid PubMed identifiers</h3>
           {% else %}
-            {% if nints != None %}
-            <hr>
-            <h2>Results</h2>
-              <!-- A search -->
-              {% if nints > 0 %}
-                <!-- With results -->
-                {{ sum_table|safe }}
-                <hr>
-                <h3>Interactions</h3>
-                {{ int_table|safe }}
-              {% else %}
-                No results
-              {% endif %}
-            {% endif %}
-          {% endif %}
+            {% if nprots != None %}
+            <!-- A search -->
+              <hr>
+              <h2>Results</h2>
+                {% if nprots > 0 %}
+                  <!-- With protein results -->
+                  <!-- Summary table -->
+                  {{ sum_table|safe }}
+
+                  {% if nints > 0 %}
+                  <!-- With interactions -->
+                    <br><hr>
+                    <h3>Interactions</h3>
+                    {{ int_table|safe }}
+                  {% endif %}
+
+                  <!-- Protein table -->
+                  <br><hr>
+                  <h3>Proteins</h3>
+                  {{ prot_table|safe }}
+
+                  {% if nints > 0 %}
+                  <!-- Graph -->
+                    <br><hr>
+                    <h3>Graph</h3>
+                    <div id="cyt"></div>
+                    <div class="btn btn-default" id="centergraph">
+                      <span class="glyphicon glyphicon-fullscreen"></span>
+                      Center
+                    </div>
+                  {% endif %}
+
+                  {% else %}
+                    No results {{nprots}}
+                  {% endif %} <!-- nprots > 0 -->
+
+              {% endif %} <!-- nprots != None -->
+
+              {% endif %} <!-- error -->
         {% endblock %}
       </div>
     </div> <!--content-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+{% if graph %}<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>{% endif %}
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script>
   $(document).ready(function(){
     $('#inttable').DataTable({
       "order": [[ 0, "desc" ]]
+    });
+    $('#prottable').DataTable({
+      "order": [[ 1, "desc" ]]
     });
   });
 </script>
@@ -138,7 +166,31 @@ var myVar;
   function showPage() {
     document.getElementById("loader").style.display = "none";
     document.getElementById("content").style.display = "inline-block";
+    {% if graph %}
+      $(document).ready(function(){
+        cy.layout( { name: 'cose' } );
+      });
+    {% endif %}
   }
 </script>
+
+{% if graph %}
+  <script>
+    $(document).ready(function(){
+      graphelements = {{ graph|safe }};
+      cy.load(graphelements);
+      $("#centergraph").on("click", function(){
+        cy.fit();
+        cy.center();
+      });
+    });
+
+  </script>
+  <script>
+
+    </script>
+{% endif %}
+
+
 </body>
 </html>

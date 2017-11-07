@@ -19,8 +19,11 @@ def home_form():
     database     = str()
     results      = None
     nints        = None
-    int_table    = None
+    nprots       = None
     sum_table    = None
+    int_table    = None
+    prot_table   = None
+    graph        = None
     error        = None
     if 'identifiers' in request.args:
         # Get Form parameters
@@ -35,7 +38,16 @@ def home_form():
             query.get_articles()
         except PubMedQueryError:
             error = "PMQuery"
-            return render_template('home.html', error=error,identifiers=identifiers, sum_table=sum_table, int_table=int_table, nints=nints, database=database)
+            return render_template('home.html',
+                                    error=error,
+                                    identifiers=identifiers,
+                                    prot_table=prot_table,
+                                    sum_table=sum_table,
+                                    int_table=int_table,
+                                    nints=nints,
+                                    nprots=nprots,
+                                    graph=graph,
+                                    database=database)
 
         # Retrieve interactions from 'source'
         if database == "PUBMED":
@@ -47,9 +59,24 @@ def home_form():
 
         summary = report.ReportSummary(query)
         summary.graphsummary.makesummary()
-        nints = summary.graphsummary.numinteractions
+        summary.protsummary.makesummary()
+        nints  = summary.graphsummary.numinteractions
+        nprots = summary.protsummary.totalprots
         if nints > 0:
             int_table = summary.graphsummary.table_to_html()
             sum_table = summary.summary_table()
+            graph     = summary.graphsummary.graph_to_json()
+        if nprots > 0:
+            prot_table = summary.protsummary.table_to_html()
+        else:
+            nprots = 0
 
-    return render_template('home.html', identifiers=identifiers, sum_table=sum_table, int_table=int_table, nints=nints, database=database)
+    return render_template('home.html',
+                            identifiers=identifiers,
+                            prot_table=prot_table,
+                            sum_table=sum_table,
+                            int_table=int_table,
+                            nints=nints,
+                            nprots=nprots,
+                            graph=graph,
+                            database=database)

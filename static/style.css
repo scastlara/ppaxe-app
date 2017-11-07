@@ -155,6 +155,12 @@ table {
   font-weight: normal;
 }
 
+#cyt {
+  width: 100%;
+  border: 1px solid #ddd;
+  height: 600px;
+}
+
 .funkyradio input[type="radio"]:empty,
 .funkyradio input[type="checkbox"]:empty {
   display: none;
