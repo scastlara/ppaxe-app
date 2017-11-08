@@ -1,3 +1,15 @@
+@font-face {
+  font-family: FreePixel;
+  src: url('./freepixel-webfont.woff') format('woff'),
+       url('./freepixel-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.nav {
+   font-family: FreePixel !important;
+   font-weight: bold;
+}
 
 .main-form {
   display: inline-block;
@@ -15,12 +27,30 @@
   height: auto;
 }
 
+.panel-heading {
+  font-family: FreePixel !important;
+  font-weight: bold;
+}
+
+.panel-body {
+  font-family: FreePixel !important;
+  font-weight: normal !important;
+}
+
+.btn {
+  font-family: FreePixel !important;
+  font-weight: bold !important;
+}
+
 .logo {
   display: inline-block;
   width: 200px;
   margin-bottom: 5%;
 }
 
+.logo:hover {
+  opacity: 0.75;
+}
 
 .compgen-logo {
   height: 19px;
@@ -29,6 +59,24 @@
 .navbar {
   margin-right: 15%;
   margin-left: 15%;
+}
+
+.panel.noborder {
+    border: none;
+    box-shadow: none;
+}
+.panel.noborder > .panel-heading {
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 0;
+}
+
+.panel.noborder > .panel-body {
+    border: 1px solid rgb(204, 204, 204);
+    border-radius: 0;
+}
+
+.results {
+  /*margin-top: 5%;*/
 }
 
 body {
@@ -59,7 +107,7 @@ html {
   margin: -75px 0 0 -75px;
   border: 16px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #3498db;
+  border-top: 16px solid #f0ad4e;
   width: 120px;
   height: 120px;
   -webkit-animation: spin 2s linear infinite;
@@ -123,9 +171,10 @@ table {
     height: 65%;
 }
 
-#content {
+.content {
     background-color: white;
     width: 70%;
+    margin-top: 2%;
     margin-left: 15%;
     margin-right: 15%;
     padding: 5%;
