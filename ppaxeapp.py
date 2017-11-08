@@ -2,6 +2,7 @@ import os
 from ppaxe import core
 from ppaxe import report
 import re
+import smtplib
 from ppaxe import PubMedQueryError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -30,9 +31,9 @@ def home_form():
         # Get Form parameters
         identifiers = request.form['identifiers']
         database = request.form['database']
+        email = request.form['email']
         identifiers = re.split(",|\n|\r", identifiers)
         identifiers = [ident for ident in identifiers if ident]
-        print(identifiers)
         #identifiers = identifiers.split(",")
 
         # Get articles from Pubmed or PMC
@@ -74,6 +75,14 @@ def home_form():
             prot_table = summary.protsummary.table_to_html()
         else:
             nprots = 0
+
+        if email:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            #Next, log in to the server
+            server.login("s.cast.lara", "AASSDD")
+            msg = "Hello THERE BEAUTIFUL!"
+            server.sendmail("s.cast.lara@gmail.com", email, msg)
 
     return render_template('home.html',
                             identifiers=identifiers,

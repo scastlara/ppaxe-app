@@ -40,6 +40,13 @@ html {
   height: 100%;
 }
 
+#identifiers {
+  min-height: 40px;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  max-height: 600px;
+}
 
 
 #loader {
