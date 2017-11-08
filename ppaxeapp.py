@@ -11,7 +11,7 @@ app = Flask(__name__) # create the application instance
 app.config.from_object(__name__) # load config from this file
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def home_form():
     '''
     Home of the ppaxe web application containing the form
@@ -26,10 +26,10 @@ def home_form():
     prot_table   = None
     graph        = None
     error        = None
-    if 'identifiers' in request.args:
+    if 'identifiers' in request.form:
         # Get Form parameters
-        identifiers = request.args['identifiers']
-        database = request.args['database']
+        identifiers = request.form['identifiers']
+        database = request.form['database']
         identifiers = re.split(",|\n|\r", identifiers)
         identifiers = [ident for ident in identifiers if ident]
         print(identifiers)
