@@ -6,6 +6,7 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
 </head>
 <body onload="myFunction()" style="margin:0;">
     <nav class="navbar navbar-default">
@@ -15,7 +16,7 @@
         </div>
         <ul class="nav navbar-nav navbar-buttons">
           <li class="active"><a href="/">HOME</a></li>
-          <li><a href="#">TUTORIAL</a></li>
+          <li><a href="/tutorial">TUTORIAL</a></li>
           <li><a href="#">ABOUT</a></li>
         </ul>
 
@@ -35,15 +36,14 @@
         <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
       </a>
 
-      <div class="bipanel">
+      <div class="row equal">
           <!-- MAIN FORM -->
-        <div class="panel-group main-form">
-          <div class="panel noborder panel-warning">
+          <div class="panel noborder panel-warning col-sm-6">
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
               <form id="ppaxeform" action="/" method="post">
               <div class="form-group">
-                <label for="identifiers">Pubmed or PMC Identifiers:</label>
+                <label for="identifiers">Pubmed identifiers:</label>
                 <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
               </div>
               <div class="funkyradio">
@@ -69,16 +69,30 @@
             </form>
             </div>
           </div>
-        </div>
 
         <!-- Quick Help-->
-        <div class="panel-group main-help">
-          <div class="panel noborder panel-info">
+          <div class="panel noborder panel-info col-sm-6">
             <div class="panel-heading">Quick Help</div>
             <div class="panel-body">
+              <p>
+                Look for <b>protein-protein interactions</b> (or genetic interactions) in the scientific literature.
+              </p>
+              <p>
+                Write PubMed identifiers separated by commas (or one in each line),
+                select if you want to parse the abstracts (PubMed) or the whole text when available (PMC), and click <b>SUBMIT</b>.
+              </p>
+
+                e.g.:
+                <ul>
+                  <li>25211495, 25196150, 25176653, 25034269, 25029242</li>
+                </ul>
+                <hr>
+              <p>
+                For an thorough explanation of how <b>PPaxe</b> works, go to the <a href="/tutorial">tutorial</a>.
+                To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="/tutorial">about</a> section.
+              </p>
             </div>
           </div>
-        </div>
 
     </div> <!--bipanel-->
 
@@ -106,8 +120,8 @@
           {% else %}
             {% if nprots != None %}
             <!-- A search -->
+              <h1>Results</h1>
               <hr>
-              <h2>Results</h2>
                 {% if nprots > 0 %}
                   <!-- With protein results -->
                   <!-- Summary table -->
@@ -115,20 +129,23 @@
 
                   {% if nints > 0 %}
                   <!-- With interactions -->
-                    <br><hr>
+                    <br>
                     <h3>Interactions</h3>
+                    <hr>
                     {{ int_table|safe }}
                   {% endif %}
 
                   <!-- Protein table -->
-                  <br><hr>
+                  <br>
                   <h3>Proteins</h3>
+                  <hr>
                   {{ prot_table|safe }}
 
                   {% if nints > 0 %}
                   <!-- Graph -->
-                    <br><hr>
+                    <br>
                     <h3>Graph</h3>
+                    <hr>
                     <div id="cyt"></div>
                     <div class="btn btn-default" id="centergraph">
                       <span class="glyphicon glyphicon-fullscreen"></span>

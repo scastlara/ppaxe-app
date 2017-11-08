@@ -11,9 +11,12 @@
    font-weight: bold;
 }
 
+
+/*
 .main-form {
   display: inline-block;
   width: 47.5%;
+  height: 100%;
 }
 
 .main-help {
@@ -21,7 +24,10 @@
   margin-left: 2.5%;
   float: right;
   width: 47.5%;
-}
+  height: 100%;
+}*/
+
+
 
 .navbar-logo {
   height: auto;
@@ -53,7 +59,7 @@
 }
 
 .compgen-logo {
-  height: 19px;
+  height: 22px;
 }
 
 .navbar {
@@ -87,6 +93,8 @@ body {
 html {
   height: 100%;
 }
+
+
 
 #identifiers {
   min-height: 40px;
