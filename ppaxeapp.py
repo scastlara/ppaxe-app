@@ -27,6 +27,7 @@ def home_form():
     prot_table   = None
     graph        = None
     error        = None
+    plots        = dict()
     if 'identifiers' in request.form:
         # Get Form parameters
         identifiers = request.form['identifiers']
@@ -52,6 +53,7 @@ def home_form():
                                     nints=nints,
                                     nprots=nprots,
                                     graph=graph,
+                                    plots=plots,
                                     database=database)
 
         # Retrieve interactions from 'source'
@@ -68,9 +70,16 @@ def home_form():
         nints  = summary.graphsummary.numinteractions
         nprots = summary.protsummary.totalprots
         if nints > 0:
+            # Tables
             int_table = summary.graphsummary.table_to_html()
             sum_table = summary.summary_table()
+            # JSON graph
             graph     = summary.graphsummary.graph_to_json()
+            # Plots
+            plots['j_int_plot'], plots['j_prot_plot'], plots['a_year_plot'] = summary.journal_plots()
+            plots['j_prot_plot'] = plots['j_prot_plot'].getvalue().encode("base64").strip()
+            plots['j_int_plot']  = plots['j_int_plot'].getvalue().encode("base64").strip()
+            plots['a_year_plot'] = plots['a_year_plot'].getvalue().encode("base64").strip()
         if nprots > 0:
             prot_table = summary.protsummary.table_to_html()
         else:
@@ -92,6 +101,7 @@ def home_form():
                             nints=nints,
                             nprots=nprots,
                             graph=graph,
+                            plots=plots,
                             database=database)
 
 @app.route('/tutorial', methods=['GET'])

@@ -196,6 +196,10 @@ table {
     display: none;
 }
 
+.plot {
+    width: 60%;
+}
+
 .prot {
     color: rgb(60, 150, 200);
 }
