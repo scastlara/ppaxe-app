@@ -111,6 +111,7 @@
     <div style="display:none;" class="content results animate-bottom">
       <!-- Results -->
       <div class="results">
+        <a href="#0" class="cd-top" title="Back to Top">Top</a>
         {% block body %}
           {% if error %}
             <h3>Invalid PubMed identifiers</h3>
@@ -178,6 +179,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 {% if graph %}<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>{% endif %}
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   $(document).ready(function(){
