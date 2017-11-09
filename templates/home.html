@@ -44,16 +44,24 @@
                 <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
               </div>
               <div class="funkyradio">
-                  <div class="funkyradio-warning">
-                    <input type="radio" name="database" value="PUBMED" id="db-pubmed" checked/>
-                    <label for="db-pubmed">PubMed</label>
+                <a class="info-tooltip" title="
+                    Look for Interactions in <b>ABSTRACTS</b>.
+                ">
+                    <div class="funkyradio-warning">
+                      <input type="radio" name="database" value="PUBMED" id="db-pubmed" checked/>
+                      <label for="db-pubmed">PubMed</label>
                   </div>
+                </a>
+                <a class="info-tooltip" title="
+                  Look for Interactions in the <b>FULL TEXT</b> (only if available at PMC).
+                ">
                   <div class="funkyradio-warning">
-                    <input type="radio" name="database" value="PMC"id="db-pmc"/>
-                    <label for="db-pmc">PMC</label>
+                      <input type="radio" name="database" value="PMC"id="db-pmc"/>
+                      <label for="db-pmc">PMC</label>
                   </div>
                     <input type="hidden" name="email" value="" id="email-input"/>
-                </div><!--
+                </div>
+                </a><!--
                     <label class="radio">
                       <input type="radio" name="database" value="PUBMED" checked>PubMed
                     </label>
@@ -275,13 +283,18 @@ var myVar;
     });
 
   </script>
-
-
-  <script>
-
-  </script>
 {% endif %}
 
+<script>
+    $( function() {
+        $( ".info-tooltip" ).tooltip({
+            track: true,
+            content: function(){
+                return $(this).attr("title");
+            }
+        });
+    } );
+</script>
 
 </body>
 </html>

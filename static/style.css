@@ -27,6 +27,14 @@
   opacity: 0.6;
 }
 
+.ui-tooltip {
+  font-family: FreePixel !important;
+}
+
+a.info-tooltip {
+  color: #888;
+}
+
 .about-logo:hover {
   opacity: 0.8;
 }
