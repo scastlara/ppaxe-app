@@ -16,7 +16,7 @@
 }
 
 .evaltable {
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .about-logo {
@@ -113,6 +113,7 @@ a.info-tooltip {
 
 .results {
   /*margin-top: 5%;*/
+  overflow-x: scroll;
 }
 
 body {
@@ -398,6 +399,10 @@ table {
   -webkit-transition: opacity .3s 0s, visibility 0s .3s;
   -moz-transition: opacity .3s 0s, visibility 0s .3s;
   transition: opacity .3s 0s, visibility 0s .3s;
+}
+
+.evaltable td {
+    font-size: 16px !important;
 }
 
 .evaltable {
