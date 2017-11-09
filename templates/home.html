@@ -236,12 +236,20 @@ $(document).ready(function(){
 
   $('#ppaxeform').submit(function() {
     ppaxeform = this;
+    maxpubmed  = 30; // Max number of articles for PubMed before dialog appears
+    maxpmc     = 10; // Max number of articles for PubMed before dialog appears
+    maxallowed = 0;
     numidents = $("#identifiers").val().split(/[\n\r,]/);
     numidents = numidents.length;
     document.getElementById("loader").style.display = "inline";
     $(".content").css('display', 'none');
-    //document.getElementById("content").style.display = "none";
-    if (numidents >= 30) {
+
+    if ($("input[name=database]:checked").val() == "PUBMED") {
+      maxallowed = maxpubmed;
+    } else {
+      maxallowed = maxpmc;
+    }
+    if (numidents >= maxallowed) {
       $( "#dialog-form" ).dialog( "open" );
       return false;
     } else {
