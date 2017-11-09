@@ -271,6 +271,9 @@ table {
 .funkyradio input[type="checkbox"]:empty {
   display: none;
 }
+.funkyradio {
+    width: 200px;
+}
 
 .funkyradio input[type="radio"]:empty ~ label,
 .funkyradio input[type="checkbox"]:empty ~ label {
