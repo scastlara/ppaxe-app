@@ -28,8 +28,64 @@
         </div>
       </nav>
       <div id="loader"></div>
-      <div class="content animate-bottom">
-        About here.
+      <div class="content animate-bottom about">
+        <div class="row">
+          <div class="col-sm-5">
+            <p>
+              <b>PPaxe</b> was developed at the <a target="_blank" href="https://compgen.bio.ub.edu">Computational Genomics Lab, UB</a>.
+              You can find the code of the website <a target="_blank" href="https://github.com/scastlara/ppaxe-app">here</a>, and for <b>PPaxe</b> <a target="_blank" href="https://github.com/scastlara/ppaxe">here</a>.
+            </p>
+            <p>
+            In order to retrieve the interactions, <b>PPaxe</b> uses the <a target="_blank" href="https://stanfordnlp.github.io/CoreNLP/download.html">Stanford CoreNLP</a> for entity recognition
+            and a Random Forest Classifier trained to recognize interacting proteins at the Computational Genomics Lab.
+            The performance of this predictor (evaluated using the <a target="_blank" href="https://en.wikipedia.org/wiki/Cross-validation_(statistics)#Leave-one-out_cross-validation">leave-one-out</a> method) can be seen below:
+            </p>
+            <br>
+            <table class="table evaltable">
+              <tbody>
+                <tr>
+                  <td><b>ACCURACY</b></td>
+                  <td>0.85</td>
+                </tr>
+                <tr>
+                  <td><b>PRECISION</b></td>
+                  <td>0.82</td>
+                </tr>
+                <tr>
+                  <td><b>RECALL</b></td>
+                  <td>0.54</td>
+                </tr>
+                <tr>
+                  <td><b>AUC</b></td>
+                  <td>0.92</td>
+                </tr>
+              </tbody>
+            </table>
+            <br>
+            <br>
+
+          </div> <!-- col1 -->
+          <div class="col-sm-2">
+          </div>
+          <div class="col-sm-5">
+            <hr>
+            <a href="https://ub.edu" target="_blank">
+              <img alt="UB site" class="about-logo" src="{{ url_for('static', filename='ub_logo.png') }}">
+            </a>
+            <br>
+            <br>
+            <a href="https://compgen.bio.ub.edu" target="_blank">
+              <img alt="CompGen site" class="about-logo" src="{{ url_for('static', filename='compgen-logo-header.png') }}">
+            </a>
+            <br>
+            <br>
+            <a href="http://flask.pocoo.org/" target="_blank">
+              <img alt="Flask site" class="about-logo" src="{{ url_for('static', filename='flask.png') }}">
+            </a>
+            <hr>
+          </div>
+
+        </div><!-- row -->
       </div>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
