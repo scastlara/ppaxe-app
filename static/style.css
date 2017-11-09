@@ -59,12 +59,16 @@
 }
 
 .compgen-logo {
-  height: 22px;
+  height: 19px;
 }
 
 .navbar {
   margin-right: 15%;
   margin-left: 15%;
+}
+
+.active-navbar a {
+  color: #FFB600 !important;
 }
 
 .panel.noborder {
@@ -116,7 +120,7 @@ html {
   margin: -75px 0 0 -75px;
   border: 16px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid #f0ad4e;
+  border-top: 16px solid #FFB600;
   width: 120px;
   height: 120px;
   -webkit-animation: spin 2s linear infinite;
@@ -200,7 +204,14 @@ table {
     color: rgb(224, 82, 82);
 }
 
+.submit:hover {
+  background-color: #FFB600;
+}
 
+.submit:active {
+  background-color: #FFB600 !important;
+  opacity: 0.8;
+}
 
 
 .submit {
@@ -315,7 +326,7 @@ table {
 .funkyradio-warning input[type="radio"]:checked ~ label:before,
 .funkyradio-warning input[type="checkbox"]:checked ~ label:before {
   color: #fff;
-  background-color: #f0ad4e;
+  background-color: #FFB600;
 }
 
 .funkyradio-info input[type="radio"]:checked ~ label:before,

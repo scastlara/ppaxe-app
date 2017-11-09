@@ -93,3 +93,17 @@ def home_form():
                             nprots=nprots,
                             graph=graph,
                             database=database)
+
+@app.route('/tutorial', methods=['GET'])
+def tutorial():
+    '''
+    Tutorial page
+    '''
+    return render_template('tutorial.html')
+
+@app.route('/about', methods=['GET'])
+def about():
+    '''
+    About page
+    '''
+    return render_template('about.html')
