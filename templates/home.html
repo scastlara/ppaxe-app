@@ -90,7 +90,7 @@
 
                 e.g.:
                 <ul>
-                  <li>25211495, 25196150, 25176653, 15640847, 20729546</li>
+                  <li>25211495, 25196150, 15640847, 20729546</li>
                 </ul>
                 <hr>
               <p>
@@ -140,6 +140,8 @@
                     <h3>Interactions</h3>
                     <hr>
                     {{ int_table|safe }}
+                    <div class="download-table int-table-btn btn btn-default">Download table</div>
+                    <br>
                   {% endif %}
 
                   <!-- Protein table -->
@@ -147,7 +149,8 @@
                   <h3>Proteins</h3>
                   <hr>
                   {{ prot_table|safe }}
-
+                  <div class="download-table prot-table-btn btn btn-default">Download table</div>
+                  <br>
                   {% if nints > 0 %}
                   <!-- Graph -->
                     <br>
@@ -192,16 +195,17 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   $(document).ready(function(){
-    $('#inttable').DataTable({
+    intTable = $('#inttable').DataTable({
       "order": [[ 0, "desc" ]],
       responsive: true
     });
-    $('#prottable').DataTable({
+    protTable = $('#prottable').DataTable({
       "order": [[ 1, "desc" ]],
       responsive: true
     });
   });
 </script>
+<script src="{{ url_for('static', filename='download-table.js') }}"></script>
 
 <script>
 
