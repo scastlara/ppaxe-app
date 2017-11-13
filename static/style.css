@@ -229,10 +229,12 @@ table {
 
 .prot {
     color: rgb(60, 150, 200);
+    font-weight: bold !important;
 }
 
 .verb {
     color: rgb(224, 82, 82);
+    font-weight: bold !important;
 }
 
 .submit:hover {
