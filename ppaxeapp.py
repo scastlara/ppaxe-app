@@ -7,12 +7,53 @@ import mail
 from ppaxe import PubMedQueryError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
+from xhtml2pdf import pisa
+from StringIO import StringIO
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.MIMEBase import MIMEBase
+from email.utils import COMMASPACE, formatdate
+from email import Encoders
 
 
+# APP INITIALIZATION
 app = Flask(__name__) # create the application instance
 app.config.from_object(__name__) # load config from this file
 
 
+# FUNCTIONS
+def create_pdf(pdf_data):
+    '''
+    Creates pdf file
+    '''
+    pdf = StringIO()
+    pisa.CreatePDF(StringIO(pdf_data), pdf)
+    print(pdf)
+    fh = open("kk.pdf", "w")
+    fh.write(pdf.getvalue())
+    fh.close()
+    return pdf
+
+def send_mail(send_from, send_to, subject, text, files=None,
+              server="127.0.0.1"):
+    '''
+    Returns message to be sent to ppaxe user
+    '''
+    msg = MIMEMultipart()
+    msg['From'] = send_from
+    msg['To'] = send_to
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = subject
+    part = MIMEBase('application', "octet-stream")
+    part.set_payload(files[0].getvalue())
+    #Encoders.encode_base64(part)
+    part.add_header('Content-Disposition', 'attachment; filename="file.pdf"')
+    msg.attach(part)
+    return msg
+
+
+# VIEWS
 @app.route('/', methods=['GET', 'POST'])
 def home_form():
     '''
@@ -91,8 +132,20 @@ def home_form():
             server.starttls()
             #Next, log in to the server
             server.login("ppaxeatcompgen", mail.passw)
-            msg = "Hello THERE BEAUTIFUL!"
-            server.sendmail("ppaxeatcompgen@gmail.com", email, msg)
+            #msg = "Hello THERE BEAUTIFUL!"
+            # Create pdf not working
+            pdf = create_pdf(render_template('pdf.html',
+                                    identifiers=identifiers,
+                                    prot_table=prot_table,
+                                    sum_table=sum_table,
+                                    int_table=int_table,
+                                    nints=nints,
+                                    nprots=nprots,
+                                    graph=graph,
+                                    plots=plots,
+                                    database=database))
+            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', "Download your results", [pdf])
+            server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
     return render_template('home.html',
                             identifiers=identifiers,
