@@ -29,10 +29,6 @@ def create_pdf(pdf_data):
     '''
     pdf = StringIO()
     pisa.CreatePDF(StringIO(pdf_data), pdf)
-    print(pdf)
-    fh = open("kk.pdf", "w")
-    fh.write(pdf.getvalue())
-    fh.close()
     return pdf
 
 def send_mail(send_from, send_to, subject, text, files=None,
