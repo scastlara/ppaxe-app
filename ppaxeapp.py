@@ -23,6 +23,7 @@ app.config.from_object(__name__) # load config from this file
 
 
 # FUNCTIONS
+# -----------------------------------------------------------------------
 def create_pdf(pdf_data):
     '''
     Creates pdf file
@@ -31,8 +32,8 @@ def create_pdf(pdf_data):
     pisa.CreatePDF(StringIO(pdf_data), pdf)
     return pdf
 
-def send_mail(send_from, send_to, subject, text, files=None,
-              server="127.0.0.1"):
+# -----------------
+def send_mail(send_from, send_to, subject, attachment=None):
     '''
     Returns message to be sent to ppaxe user
     '''
@@ -42,7 +43,7 @@ def send_mail(send_from, send_to, subject, text, files=None,
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = subject
     part = MIMEBase('application', "octet-stream")
-    part.set_payload(files[0].getvalue())
+    part.set_payload(attachment.getvalue())
     #Encoders.encode_base64(part)
     part.add_header('Content-Disposition', 'attachment; filename="file.pdf"')
     msg.attach(part)
@@ -50,6 +51,7 @@ def send_mail(send_from, send_to, subject, text, files=None,
 
 
 # VIEWS
+# -----------------------------------------------------------------------
 @app.route('/', methods=['GET', 'POST'])
 def home_form():
     '''
@@ -73,7 +75,7 @@ def home_form():
             query = core.PMQuery(ids=identifiers, database=database)
             query.get_articles()
         except PubMedQueryError:
-            error = "PMQuery"
+            response['error'] = "PMQuery"
 
         # Retrieve interactions from 'source'
         if database == "PUBMED":
@@ -109,16 +111,14 @@ def home_form():
         if email:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
-            #Next, log in to the server
             server.login("ppaxeatcompgen", mail.passw)
-            #msg = "Hello THERE BEAUTIFUL!"
-            # Create pdf not working
-            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', "Download your results", [response['pdf']])
+            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf'])
             server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
 
 
+# -----------------
 @app.route('/tutorial', methods=['GET'])
 def tutorial():
     '''
@@ -126,6 +126,7 @@ def tutorial():
     '''
     return render_template('tutorial.html')
 
+# -----------------
 @app.route('/about', methods=['GET'])
 def about():
     '''
