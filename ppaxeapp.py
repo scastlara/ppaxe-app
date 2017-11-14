@@ -45,9 +45,10 @@ def send_mail(send_from, send_to, subject, attachment=None):
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = subject
     part = MIMEBase('application', "octet-stream")
+    # Remove header
     part.set_payload(attachment.getvalue())
     #Encoders.encode_base64(part)
-    part.add_header('Content-Disposition', 'attachment; filename="file.pdf"')
+    part.add_header('Content-Disposition', 'attachment; filename="ppaxe-report.pdf"')
     msg.attach(part)
     return msg
 
@@ -112,15 +113,15 @@ def home_form():
             response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
             response['today'] = datetime.date.today()
             response['database'] = database
-            response['pdf'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
-            response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf'].getvalue())
+            response['pdf-plain'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
+            response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf-plain'].getvalue())
 
 
         if email:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
             server.login("ppaxeatcompgen", mail.passw)
-            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf'])
+            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf-plain'])
             server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
