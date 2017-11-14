@@ -122,24 +122,24 @@
       <div class="results">
         <a href="#0" class="cd-top" title="Back to Top">Top</a>
         {% block body %}
-          {% if error %}
+          {% if response['error'] %}
             <h3>Invalid PubMed identifiers</h3>
           {% else %}
-            {% if nprots != None %}
+            {% if response %}
             <!-- A search -->
               <h1>Results</h1>
               <hr>
-                {% if nprots > 0 %}
+                {% if response['nprots'] > 0 %}
                   <!-- With protein results -->
                   <!-- Summary table -->
-                  {{ sum_table|safe }}
+                  {{ response['sum_table']|safe }}
 
-                  {% if nints > 0 %}
+                  {% if response['nints'] > 0 %}
                   <!-- With interactions -->
                     <br>
                     <h3>Interactions</h3>
                     <hr>
-                    {{ int_table|safe }}
+                    {{ response['int_table']|safe }}
                     <div class="download-table int-table-btn btn btn-default">Download table</div>
                     <br>
                   {% endif %}
@@ -148,10 +148,10 @@
                   <br>
                   <h3>Proteins</h3>
                   <hr>
-                  {{ prot_table|safe }}
+                  {{ response['prot_table']|safe }}
                   <div class="download-table prot-table-btn btn btn-default">Download table</div>
                   <br>
-                  {% if nints > 0 %}
+                  {% if response['nints'] > 0 %}
                   <!-- Graph -->
                     <br>
                     <h3>Graph</h3>
@@ -167,11 +167,11 @@
                     <h3>Plots</h3>
                     <hr>
                     <div class="plots">
-                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ plots.j_prot_plot }}"/>
+                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
                       <br><hr>
-                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ plots.j_int_plot }}"/>
+                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
                       <br><hr>
-                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ plots.a_year_plot }}"/>
+                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
                       <br><hr>
                     </div>
                   {% endif %}
@@ -189,7 +189,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-{% if graph %}<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>{% endif %}
+{% if response['graph'] %}<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>{% endif %}
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -274,11 +274,11 @@ var myVar;
   function showPage() {
     document.getElementById("loader").style.display = "none";
     $(".content").css('display', 'inline-block');
-    {% if nprots == None  %}
+    {% if 'nprots' not in response  %}
       $(".results").css('display', 'none');
     {% endif %}
 
-    {% if graph %}
+    {% if response['graph'] %}
       $(document).ready(function(){
         cy.layout( { name: 'cose' } );
       });
@@ -286,10 +286,10 @@ var myVar;
   }
 </script>
 
-{% if graph %}
+{% if response['graph'] %}
   <script>
     $(document).ready(function(){
-      graphelements = {{ graph|safe }};
+      graphelements = {{ response['graph']|safe }};
       cy.load(graphelements);
       $("#centergraph").on("click", function(){
         cy.fit();

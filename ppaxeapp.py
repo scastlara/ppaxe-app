@@ -55,17 +55,10 @@ def home_form():
     '''
     Home of the ppaxe web application containing the form
     '''
-    identifiers  = str()
-    database     = str()
-    results      = None
-    nints        = None
-    nprots       = None
-    sum_table    = None
-    int_table    = None
-    prot_table   = None
-    graph        = None
-    error        = None
-    plots        = dict()
+    identifiers = str()
+    database    = str()
+    response    = dict()
+
     if 'identifiers' in request.form:
         # Get Form parameters
         identifiers = request.form['identifiers']
@@ -73,7 +66,6 @@ def home_form():
         email = request.form['email']
         identifiers = re.split(",|\n|\r", identifiers)
         identifiers = [ident for ident in identifiers if ident]
-        #identifiers = identifiers.split(",")
 
         # Get articles from Pubmed or PMC
         source = str()
@@ -82,17 +74,6 @@ def home_form():
             query.get_articles()
         except PubMedQueryError:
             error = "PMQuery"
-            return render_template('home.html',
-                                    error=error,
-                                    identifiers=identifiers,
-                                    prot_table=prot_table,
-                                    sum_table=sum_table,
-                                    int_table=int_table,
-                                    nints=nints,
-                                    nprots=nprots,
-                                    graph=graph,
-                                    plots=plots,
-                                    database=database)
 
         # Retrieve interactions from 'source'
         if database == "PUBMED":
@@ -105,23 +86,25 @@ def home_form():
         summary = report.ReportSummary(query)
         summary.graphsummary.makesummary()
         summary.protsummary.makesummary()
-        nints  = summary.graphsummary.numinteractions
-        nprots = summary.protsummary.totalprots
-        if nints > 0:
+        response['nints']  = summary.graphsummary.numinteractions
+        response['nprots'] = summary.protsummary.totalprots
+        if response['nints'] > 0:
             # Tables
-            int_table = summary.graphsummary.table_to_html()
-            sum_table = summary.summary_table()
+            response['int_table'] = summary.graphsummary.table_to_html()
+            response['sum_table'] = summary.summary_table()
             # JSON graph
-            graph     = summary.graphsummary.graph_to_json()
+            response['graph'] = summary.graphsummary.graph_to_json()
             # Plots
-            plots['j_int_plot'], plots['j_prot_plot'], plots['a_year_plot'] = summary.journal_plots()
-            plots['j_prot_plot'] = plots['j_prot_plot'].getvalue().encode("base64").strip()
-            plots['j_int_plot']  = plots['j_int_plot'].getvalue().encode("base64").strip()
-            plots['a_year_plot'] = plots['a_year_plot'].getvalue().encode("base64").strip()
-        if nprots > 0:
-            prot_table = summary.protsummary.table_to_html()
+            response['plots'] = dict()
+            response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
+            response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
+            response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
+            response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
+            response['pdf'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
+        if response['nprots'] > 0:
+            response['prot_table'] = summary.protsummary.table_to_html()
         else:
-            nprots = 0
+            response['nprots'] = 0
 
         if email:
             server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -130,29 +113,11 @@ def home_form():
             server.login("ppaxeatcompgen", mail.passw)
             #msg = "Hello THERE BEAUTIFUL!"
             # Create pdf not working
-            pdf = create_pdf(render_template('pdf.html',
-                                    identifiers=identifiers,
-                                    prot_table=prot_table,
-                                    sum_table=sum_table,
-                                    int_table=int_table,
-                                    nints=nints,
-                                    nprots=nprots,
-                                    graph=graph,
-                                    plots=plots,
-                                    database=database))
-            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', "Download your results", [pdf])
+            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', "Download your results", [response['pdf']])
             server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
-    return render_template('home.html',
-                            identifiers=identifiers,
-                            prot_table=prot_table,
-                            sum_table=sum_table,
-                            int_table=int_table,
-                            nints=nints,
-                            nprots=nprots,
-                            graph=graph,
-                            plots=plots,
-                            database=database)
+    return render_template('home.html', identifiers=identifiers, response=response)
+
 
 @app.route('/tutorial', methods=['GET'])
 def tutorial():

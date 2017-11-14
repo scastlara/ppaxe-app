@@ -46,24 +46,24 @@
       <!-- Results -->
       <div class="results">
         {% block body %}
-          {% if error %}
+          {% if response['error'] %}
             <h3>Invalid PubMed identifiers</h3>
           {% else %}
-            {% if nprots != None %}
+            {% if response['nprots'] != None %}
             <!-- A search -->
               <h1>Results</h1>
               <hr>
-                {% if nprots > 0 %}
+                {% if response['nprots'] > 0 %}
                   <!-- With protein results -->
                   <!-- Summary table -->
-                  {{ sum_table|safe }}
+                  {{ response['sum_table']|safe }}
                   <pdf:nextpage />
-                  {% if nints > 0 %}
+                  {% if response['nints'] > 0 %}
                   <!-- With interactions -->
                     <br>
                     <h3>Interactions</h3>
                     <hr>
-                    {{ int_table|safe }}
+                    {{ response['int_table']|safe }}
                     <br>
                   {% endif %}
                   <pdf:nextpage />
@@ -71,17 +71,17 @@
                   <br>
                   <h3>Proteins</h3>
                   <hr>
-                  {{ prot_table|safe }}
+                  {{ response['prot_table']|safe }}
                   <br>
-                  {% if nints > 0 %}
+                  {% if response['nints'] > 0 %}
                   <pdf:nextpage />
                   <!-- Plots -->
                     <div class="plots">
-                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ plots.j_prot_plot }}"/>
+                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
                       <br><hr><pdf:nextpage />
-                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ plots.j_int_plot }}"/>
+                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot'] }}"/>
                       <br><hr><pdf:nextpage />
-                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ plots.a_year_plot }}"/>
+                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
                       <br><hr><pdf:nextpage />
                     </div>
                   {% endif %}
