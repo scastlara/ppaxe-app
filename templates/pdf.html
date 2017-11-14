@@ -53,11 +53,11 @@
               <b>Database: </b> {{ response['database'] }}<br>
               <b>PubMed Identifiers: </b> <br>
               <div class="small-table">
-                <ul>
+                <ol>
                 {% for ident in identifiers %}
                     <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term={{ ident }}">{{ ident }}</a></li>
                 {% endfor %}
-                </ul>
+                </ol>
               </div>
 
               <pdf:nextpage />
