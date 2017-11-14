@@ -111,10 +111,6 @@ a.info-tooltip {
     border-radius: 0;
 }
 
-.results {
-  /*margin-top: 5%;*/
-  overflow-x: scroll;
-}
 
 body {
   min-height: 100%;
@@ -125,7 +121,9 @@ html {
   height: 100%;
 }
 
-
+.plots {
+  overflow-x: scroll;
+}
 
 #identifiers {
   min-height: 40px;

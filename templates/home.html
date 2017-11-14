@@ -6,6 +6,7 @@
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
 </head>
 <body onload="myFunction()" style="margin:0;">
@@ -109,7 +110,7 @@
         <form>
           <fieldset>
             <label for="email">Email</label>
-            <input type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all">
+            <input type="text" name="email" id="email" value="yourmail@something.com" class="text ui-widget-content ui-corner-all">
             <!-- Allow form submission with keyboard without duplicating the dialog button -->
             <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
           </fieldset>
@@ -131,6 +132,12 @@
               <hr>
                 {% if response['nprots'] > 0 %}
                   <!-- With protein results -->
+                  <!-- Download pdf report -->
+                  <a download=ppaxe-report.pdf href="{{ response['pdf'] }}" title='Download pdf document'>
+                    <div class="download-pdf btn btn-default"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                      Download PDF</div>
+                  </a>
+                  <br><br>
                   <!-- Summary table -->
                   {{ response['sum_table']|safe }}
 
@@ -219,7 +226,7 @@ $(document).ready(function(){
     width: 350,
     modal: true,
     buttons: {
-      "OK": function() {
+      "Send Mail": function() {
         emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
         email = $( "#email" );
         $(this).dialog( "close" );
@@ -227,7 +234,7 @@ $(document).ready(function(){
         ppaxeform.submit();
 
       },
-      Cancel: function() {
+      "Don't send mail": function() {
         $(this).dialog( "close" );
         ppaxeform.submit();
 
