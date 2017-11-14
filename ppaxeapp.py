@@ -5,6 +5,7 @@ import re
 import smtplib
 import mail
 import base64
+import datetime
 from ppaxe import PubMedQueryError
 from flask import Flask, request, session, g, redirect, url_for, abort, \
      render_template, flash
@@ -91,6 +92,12 @@ def home_form():
         summary.protsummary.makesummary()
         response['nints']  = summary.graphsummary.numinteractions
         response['nprots'] = summary.protsummary.totalprots
+
+        if response['nprots'] > 0:
+            response['prot_table'] = summary.protsummary.table_to_html()
+        else:
+            response['nprots'] = 0
+
         if response['nints'] > 0:
             # Tables
             response['int_table'] = summary.graphsummary.table_to_html()
@@ -103,12 +110,11 @@ def home_form():
             response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
             response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
             response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
+            response['today'] = datetime.date.today()
+            response['database'] = database
             response['pdf'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
             response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf'].getvalue())
-        if response['nprots'] > 0:
-            response['prot_table'] = summary.protsummary.table_to_html()
-        else:
-            response['nprots'] = 0
+
 
         if email:
             server = smtplib.SMTP('smtp.gmail.com', 587)
