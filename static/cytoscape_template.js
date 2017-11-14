@@ -22,7 +22,8 @@ var stylesheet = cytoscape.stylesheet()
     .css({
         'content': 'data(name)',
         'text-valign': 'bottom',
-        'color': '#393939',
+        'color': '#656565',
+        'background-color': "#FFB600",
         'font-size': 10,
         'text-halign': 'center',
         'text-background-color': '#F8F8F8',
@@ -37,9 +38,9 @@ var stylesheet = cytoscape.stylesheet()
         'text-background-shape': 'roundrectangle',
         'target-arrow-shape': 'triangle',
         'width': 2,
-        'line-color': 'data(colorEDGE)',
+        'line-color': '#888888',
         'font-size': 8,
-        'target-arrow-color': 'data(colorEDGE)'
+        'target-arrow-color': '#888888'
     });
 
 // Cytoscape variable definition
