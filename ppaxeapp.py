@@ -117,12 +117,12 @@ def home_form():
             response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf-plain'].getvalue())
 
 
-        if email:
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.starttls()
-            server.login("ppaxeatcompgen", mail.passw)
-            msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf-plain'])
-            server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
+            if email:
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login("ppaxeatcompgen", mail.passw)
+                msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf-plain'])
+                server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
 
