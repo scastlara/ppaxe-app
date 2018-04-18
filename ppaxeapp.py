@@ -121,8 +121,8 @@ def home_form():
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
                 server.login(os.environ['PPAXE_EUSER'], os.environ['PPAXE_EPASSW'])
-                msg = send_mail(os.environ['PPAXE_MAIL'], email, 'PPaxe results', response['pdf-plain'])
-                server.sendmail(os.environ['PPAXE_MAIL'], email, msg.as_string())
+                msg = send_mail(os.environ['PPAXE_EMAIL'], email, 'PPaxe results', response['pdf-plain'])
+                server.sendmail(os.environ['PPAXE_EMAIL'], email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
 
