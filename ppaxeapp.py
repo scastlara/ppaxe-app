@@ -3,7 +3,6 @@ from ppaxe import core
 from ppaxe import report
 import re
 import smtplib
-import mail
 import base64
 import datetime
 from ppaxe import PubMedQueryError
@@ -17,9 +16,10 @@ from email.mime.text import MIMEText
 from email.MIMEBase import MIMEBase
 from email.utils import COMMASPACE, formatdate
 from email import Encoders
-
+from pycorenlp import StanfordCoreNLP
 
 # APP INITIALIZATION
+core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 app = Flask(__name__) # create the application instance
 app.config.from_object(__name__) # load config from this file
 
@@ -120,7 +120,7 @@ def home_form():
             if email:
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
-                server.login("ppaxeatcompgen", mail.passw)
+                server.login(os.environ['PPAXE_EUSER'], os.environ['PPAXE_EPASSW'])
                 msg = send_mail("ppaxeatcompgen@gmail.com", email, 'PPaxe results', response['pdf-plain'])
                 server.sendmail("ppaxeatcompgen@gmail.com", email, msg.as_string())
 
