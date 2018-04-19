@@ -13,8 +13,8 @@
         <div class="container-fluid">
           <ul class="nav navbar-nav navbar-buttons">
             <li><a href="/">HOME</a></li>
-            <li class="active-navbar"><a href="/tutorial">TUTORIAL</a></li>
-            <li><a href="/download">DOWNLOAD</a></li>
+            <li><a href="/tutorial">TUTORIAL</a></li>
+            <li class="active-navbar"><a href="/download">DOWNLOAD</a></li>
             <li><a href="/about">ABOUT</a></li>
           </ul>
 
@@ -30,31 +30,24 @@
       </nav>
       <div id="loader"></div>
       <div class="content animate-bottom">
-        <div class="tutorial-title">PPaxe tutorial</div>
+        <div class="tutorial-title">PPaxe downloads</div>
         <hr>
-
         <p class="text-pixel">
-          <strong>PPaxe</strong> is a tool to retrieve protein-protein and genetic interactions from the scientific literature by analyzing the sentences using the StanfordCoreNLP and classifying co-ocurrent proteins/genes as interacting/non-interacting with a Random Forest Classifier.
+          <strong>PPaxe</strong> is available in different formats:
         </p>
 
-        <!-- SEARCH FORM -->
-        <span class="tutorial-subtitle">Search Form</span>
+        <a href="https://github.com/scastlara/ppaxe/archive/master.zip"><span class="download-btn">Python Module</span></a> <span class="text-pixel"> (See install instructions <a target="_blank" href="https://github.com/scastlara/ppaxe/blob/master/README.md#installing">here</a></span>)
         <p class="text-pixel">
-          <strong>PPaxe</strong> takes a list of <strong>PubMed identifiers</strong> as an input, separated by commas or newline characters. Once the identifiers have been written, the user has to select either PubMed (to look for interactions in the Abstract of the articles) or PubMedCentral (to look for interactions in the full-text article when available on PubMedCentral). Please, note that all the identifiers have to be PubMed identifiers, whether the search is going to be performed on PubMed or PubMedCentral.
+          
         </p>
-
-        <img class="tut-img" src="{{ url_for('static', filename='tut1.png') }}">
-
+        <a href="https://hub.docker.com/r/compgenlabub/ppaxe/" target="_blank"><span class="download-btn">Docker with executable</span></a>
         <p class="text-pixel">
-          When searching more than <strong>30 identifiers</strong>, PPaxe will request an e-mail to send the results when available, as the search may take a while. Although the search can still be performed without providing an e-mail, doing so is highly encouraged, as it allows users to close the application and still recieve the results.
+          
         </p>
-
-        <img class="tut-img" src="{{ url_for('static', filename='tut2.png') }}">
-        <hr>
-
-        <!-- RESULTS -->
-        <span class="tutorial-subtitle">Results</span>
-
+        <a href="https://hub.docker.com/r/compgenlabub/ppaxe-app/" target="_blank"><span class="download-btn">Docker with web application</span></a>
+        <p class="text-pixel">
+          
+        </p>
 
       </div>
 

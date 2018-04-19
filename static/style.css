@@ -11,6 +11,64 @@
    font-weight: bold;
 }
 
+.tutorial-title {
+   font-family: FreePixel !important;
+   font-size: 48px;
+}
+
+.text-pixel {
+  font-family: FreePixel !important;
+  font-size: 16px;
+}
+
+.tut-img {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+  width: 700px;
+}
+
+.tutorial-subtitle{
+  display: inline-block;
+  font-family: FreePixel !important;
+  font-size: 24px;
+  background-color: #FCF8E3;
+  color: #8a6d3b;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+
+}
+
+.download-btn {
+  display: inline-block;
+  cursor: pointer;
+  font-family: FreePixel !important;
+  font-size: 18px;
+  background-color: #FCF8E3;
+  color: #8a6d3b !important;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.download-btn a {
+  color: #8a6d3b;
+  text-decoration:none; 
+}
+
+.download-btn:hover {
+ background-color: #FFB600 !important;  
+ color: white;
+}
 .about {
   font-family: FreePixel !important;
 }

@@ -135,6 +135,16 @@ def tutorial():
     '''
     return render_template('tutorial.html')
 
+
+
+@app.route('/download', methods=['GET'])
+def download():
+    '''
+    download page
+    '''
+    return render_template('download.html')
+
+
 # -----------------
 @app.route('/about', methods=['GET'])
 def about():
