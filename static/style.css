@@ -27,7 +27,15 @@
   margin-left: auto;
 }
 
+#query-form {
+  padding-top: 20px;
+}
 
+#query-form-btn {
+  display: block;
+  width: 150px;
+  margin-bottom: 25px;
+}
 
 .tutorial-subtitle{
   display: inline-block;
@@ -194,6 +202,25 @@ html {
 }
 
 
+#loader-small {
+  position: inline;
+  z-index: 100;
+  width: 50px;
+  height: 50px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #FFB600;
+  width: 50px;
+  height: 50px;
+  margin-top: 40px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+#pmqueryloading {
+  display: none;
+}
+
 #loader {
   position: absolute;
   left: 50%;
@@ -312,6 +339,19 @@ table {
 .funkyradio div {
   clear: both;
   overflow: hidden;
+}
+
+#pmqueryform {
+  margin-top: 30px;
+}
+
+#pmqueryerror {
+  margin-top: 30px;
+  display: none;
+}
+
+#pmqueryerror span {
+  color: red;
 }
 
 .funkyradio label {

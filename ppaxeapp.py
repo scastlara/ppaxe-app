@@ -17,6 +17,9 @@ from email.MIMEBase import MIMEBase
 from email.utils import COMMASPACE, formatdate
 from email import Encoders
 from pycorenlp import StanfordCoreNLP
+from flask import jsonify
+import requests
+from xml.dom import minidom
 
 # APP INITIALIZATION
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
@@ -125,6 +128,32 @@ def home_form():
                 server.sendmail(os.environ['PPAXE_EMAIL'], email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
+
+
+@app.route('/querypubmed', methods=['GET'])
+def querypubmed():
+    '''
+    Queries PubMed and returns the pubmed identifiers
+    '''    
+    response    = dict()
+    if request.is_xhr:
+        query = request.args.get('query')
+        req = requests.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=%s" % (query) )
+        if req.status_code == 200:
+            md = minidom.parseString(req.text)
+            theids = md.getElementsByTagName('Id')
+            try:
+                theids = [ iden.firstChild.nodeValue for iden in theids ]
+            except Exception:
+                response['error'] = True
+            if theids:
+                response['identifiers'] = theids
+                response['error'] = False
+            else:
+                response['error'] = True
+        else:
+            response['error'] = True
+        return jsonify(response)
 
 
 # -----------------
