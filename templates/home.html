@@ -118,7 +118,7 @@
       </div>
     </div> <!--content-->
 
-    <div style="display:none;" class="content results animate-bottom">
+    <div style="display:none;" id="results-div" class="content results animate-bottom">
       <!-- Results -->
       <div class="results">
         <a href="#0" class="cd-top" title="Back to Top">Top</a>
@@ -163,7 +163,7 @@
                     <br>
                     <h3>Graph</h3>
                     <hr>
-                    <div id="cyt"></div>
+                    <div id="cyt"> </div>
                     <div class="btn btn-default" id="centergraph">
                       <span class="glyphicon glyphicon-fullscreen"></span>
                       Center
@@ -196,7 +196,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-{% if response['graph'] %}<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>{% endif %}
+<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 <script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -272,8 +272,14 @@ $(document).ready(function(){
 
 </script>
 
+{% if response['graph'] %}
+  <script>
+   
+  </script>
+{% endif %}
+
 <script>
-var myVar;
+  var myVar;
   function myFunction() {
       myVar = setTimeout(showPage, 0.001);
   }
@@ -281,31 +287,57 @@ var myVar;
   function showPage() {
     document.getElementById("loader").style.display = "none";
     $(".content").css('display', 'inline-block');
+    $('html, body').animate({
+        scrollTop: $("#results-div").offset().top
+    }, 2000);
     {% if 'nprots' not in response  %}
       $(".results").css('display', 'none');
     {% endif %}
-
     {% if response['graph'] %}
-      $(document).ready(function(){
-        cy.layout( { name: 'cose' } );
-      });
+      $(document).ready(function() {
+       var stylesheet = cytoscape.stylesheet()
+         .selector('node')
+             .css({
+                 'content': 'data(name)',
+                 'text-valign': 'bottom',
+                 'color': '#656565',
+                 'background-color': "#FFB600",
+                 'font-size': 10,
+                 'text-halign': 'center',
+                 'text-background-color': '#F8F8F8',
+                 'text-background-opacity': 1,
+                 'text-background-shape': 'roundrectangle',
+             })
+         .selector('edge')
+             .css({
+                 'content': 'data(confidence)',
+                 'text-background-color': '#F8F8F8',
+                 'text-background-opacity': 1,
+                 'text-background-shape': 'roundrectangle',
+                 'target-arrow-shape': 'triangle',
+                 'width': 2,
+                 'line-color': '#888888',
+                 'font-size': 8,
+                 'target-arrow-color': '#888888'
+             });
+  
+         // Cytoscape variable definition
+         console.log("Initializing graph");
+         var cy = cytoscape({
+             style: stylesheet,
+             layout: { name: 'cose' },
+             container: document.getElementById('cyt'),
+             elements: {{ response['graph']|safe }},
+             ready: function() { window.cy = this; }
+           });
+         $("#centergraph").on("click", function() {
+           window.cy.layout({name:'cose'});
+           window.cy.fit();
+       })
+    });
     {% endif %}
   }
 </script>
-
-{% if response['graph'] %}
-  <script>
-    $(document).ready(function(){
-      graphelements = {{ response['graph']|safe }};
-      cy.load(graphelements);
-      $("#centergraph").on("click", function(){
-        cy.fit();
-        cy.center();
-      });
-    });
-
-  </script>
-{% endif %}
 
 <script>
     $( function() {
@@ -317,6 +349,10 @@ var myVar;
         });
     } );
 </script>
+
+
+
+
 
 </body>
 </html>
