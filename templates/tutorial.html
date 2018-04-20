@@ -30,6 +30,7 @@
       </nav>
       <div id="loader"></div>
       <div class="content animate-bottom">
+         <a href="#0" class="cd-top" title="Back to Top">Top</a>
         <div class="tutorial-title">PPaxe tutorial</div>
         <hr>
 
@@ -65,22 +66,41 @@
           <img class="tut-img" width="250px" src="{{ url_for('static', filename='tut3.png') }}">
         </a>
 
+        <br>
         <p class="text-pixel">
-          The Interactions found on the requested articles will be displayed on the "Interactions" table. This table includes a confidence value (which ranges from 0.5 to 1), the names of the proteins/genes, the PubMed identifier of the article, the publication year, and the sentence from which the interaction was retrieved (with the proteins displayed in blue, and the verbs in red). The table can be downloaded by clicking on the 'Download table' button.
+          <strong>The Interactions</strong> found on the requested articles will be displayed on the "Interactions" table. This table includes a confidence value (which ranges from 0.5 to 1), the names of the proteins/genes, the PubMed identifier of the article, the publication year, and the sentence from which the interaction was retrieved (with the proteins displayed in blue, and the verbs in red). The table can be downloaded by clicking on the 'Download table' button.
         </p>
         <a target="_blank" href="{{ url_for('static', filename='tut4.png') }}">
           <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut4.png') }}">
         </a>
 
+        <br>
+        <p class="text-pixel">
+          <strong>The Proteins table</strong> shows how many times each protein or gene symbol has appeared in the different sentences. Each column corresponds to the different contexts in which the protein symbol appears: <strong>Total Count</strong> is the sum of all the ocurrences of a particular protein symbol; <strong>Int. Count</strong> corresponds to the number of times a particular protein appears in a retrieved interaction; <strong>Left/Right Count</strong> refer to the times a symbol is present on the "left" or the "right" of a particular interaction, e.g: <it>A (left)</it> interacts with <it>B (right)</it>.
+        </p>
+         <a target="_blank" href="{{ url_for('static', filename='tut6.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut6.png') }}">
+        </a>
 
 
+        <p class="text-pixel">
+          PPaxe also provides a <strong>Graph visualization</strong>. The "Center" button resets the visualization:
+        </p>
+        <a target="_blank" href="{{ url_for('static', filename='tut5.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut5.png') }}">
+        </a>
 
+        <br>
+        <p class="text-pixel">
+          Finally, PPaxe also displays several <strong>plots</strong> regarding the articles in which the proteins have been found.
+        </p>
 
       </div>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
       <script>
       var myVar;
         function myFunction() {
