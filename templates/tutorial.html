@@ -43,8 +43,14 @@
         <p class="text-pixel">
           <strong>PPaxe</strong> takes a list of <strong>PubMed identifiers</strong> as an input, separated by commas or newline characters. Once the identifiers have been written, the user has to select either PubMed (to look for interactions in the Abstract of the articles) or PubMedCentral (to look for interactions in the full-text article when available on PubMedCentral). Please, note that all the identifiers have to be PubMed identifiers, whether the search is going to be performed on PubMed or PubMedCentral.
         </p>
+
+        <p class="text-pixel">
+          Alternatively, users can also specify a PubMed query by clicking on the "INPUT PUBMED QUERY" buton and writing the query on the textbox. The PubMed identifiers will be written automatically on the PPaxe form.
+        </p>
+
+
         <a target="_blank" href="{{ url_for('static', filename='tut1.png') }}">
-          <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut1.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut1.png') }}">
         </a>
 
         <p class="text-pixel">
@@ -55,13 +61,8 @@
           <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut2.png') }}">
         </a>
 
-        <p class="text-pixel">
-          Alternatively, users can also specify a PubMed query by clicking on the "INPUT PUBMED QUERY" buton and writing the query on the textbox. The PubMed identifiers will be written automatically on the PPaxe form.
-        </p>
-
-         <a target="_blank" href="{{ url_for('static', filename='tut7.png') }}">
-          <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut7.png') }}">
-        </a>
+        
+      
         <hr>
 
         <!-- RESULTS -->

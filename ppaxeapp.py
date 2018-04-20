@@ -136,23 +136,25 @@ def querypubmed():
     Queries PubMed and returns the pubmed identifiers
     '''    
     response    = dict()
+    response['error'] = True
     if request.is_xhr:
         query = request.args.get('query')
-        req = requests.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=%s" % (query) )
+        req = requests.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&rettype=count&term=%s" % (query) )
         if req.status_code == 200:
             md = minidom.parseString(req.text)
-            theids = md.getElementsByTagName('Id')
-            try:
-                theids = [ iden.firstChild.nodeValue for iden in theids ]
-            except Exception:
-                response['error'] = True
-            if theids:
-                response['identifiers'] = theids
-                response['error'] = False
-            else:
-                response['error'] = True
-        else:
-            response['error'] = True
+            count = md.getElementsByTagName('Count')
+            count = count[0].firstChild.nodeValue
+            req = requests.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmax=%s&term=%s" % (count, query) )
+            if req.status_code == 200:
+                md = minidom.parseString(req.text)
+                theids = md.getElementsByTagName('Id')
+                try:
+                    theids = [ iden.firstChild.nodeValue for iden in theids ]
+                except Exception:
+                    response['error'] = True
+                if theids:
+                    response['identifiers'] = theids
+                    response['error'] = False
         return jsonify(response)
 
 

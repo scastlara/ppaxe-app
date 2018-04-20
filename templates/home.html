@@ -34,12 +34,13 @@
       <a href="/">
         <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
       </a>
-      <div id="query-form-btn" class="btn btn-default">INPUT PUBMED QUERY</div>
+      
       <div class="row equal">
           <!-- MAIN FORM -->
           <div class="panel noborder panel-warning col-sm-6">
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
+              <div id="query-form-btn" class="btn btn-default">INPUT PUBMED QUERY</div>
               <form id="ppaxeform" action="/" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
