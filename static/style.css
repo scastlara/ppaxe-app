@@ -33,7 +33,7 @@
 
 #query-form-btn {
   display: block;
-  width: 150px;
+  width: 200px;
   margin-bottom: 25px;
 }
 
@@ -120,7 +120,10 @@ a.info-tooltip {
   height: 100%;
 }*/
 
-
+#pubmedqueryicon {
+  width: 34px;
+  height: 34px;
+}
 
 .navbar-logo {
   height: auto;
@@ -219,6 +222,13 @@ html {
 
 #pmqueryloading {
   display: none;
+}
+
+.btn-info {
+  color: #fff !important;
+  background-color: #5bc0de !important;
+  border-color: #46b8da !important;
+}
 }
 
 #loader {

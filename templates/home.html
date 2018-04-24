@@ -40,7 +40,7 @@
           <div class="panel noborder panel-warning col-sm-6">
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
-              <div id="query-form-btn" class="btn btn-default">INPUT PUBMED QUERY</div>
+              <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
               <form id="ppaxeform" action="/" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
@@ -121,13 +121,12 @@
 
 
     <div id="query-form" title="Query PubMed">
-      Write PubMed Query to get the articles here:
-      <br>
+      <p class="text-pixel">Write PubMed Query to get the articles here:</p>
       <form id="pmqueryform">
         <textarea class="form-control" rows="2" name="pmquery" id="pmquery"></textarea>
       </form>
-      <div id="pmqueryloading"><div id="loader-small"></div> Querying Pubmed...</div>
-      <div id="pmqueryerror"> <span class="glyphicon glyphicon-remove"> </span> PubMed Query Error </div>
+      <div id="pmqueryloading"><div id="loader-small"></div> <p class="text-pixel">Querying Pubmed...</p></div>
+      <div id="pmqueryerror"> <span class="glyphicon glyphicon-remove"> </span> <p class="text-pixel">PubMed Query Error </p></div>
 
     </div>
 
@@ -266,48 +265,56 @@ $(document).ready(function(){
     width: 350,
     modal: true,
     buttons: {
-      "Query PubMed": function() {
-        // Query Pubmed Here
-        console.log("Querying...");
-        var queryInput = $("#pmquery").val();
-        $("#pmqueryloading").show();
-        $.ajax({
-          type: "GET",
-          url: "/querypubmed",
-          cache: true,
-          data: {
-            'query': queryInput
-          },
-          success : function(data) {
-            if (data.error) {
-              $("#pmqueryerror").show();
-              $("#pmqueryloading").hide()
-            } else {
-              $("#identifiers").val(data.identifiers.join(","));
-               $("#query-form").dialog("close");
-               $("#pmqueryloading").hide()
-            }
-          },
-          statusCode: {
-            404: function () {
+      "Query PubMed": {
+        class: 'btn btn-info',
+        text: 'Query PubMed',
+        click: function() {
+          // Query Pubmed Here
+          console.log("Querying...");
+          var queryInput = $("#pmquery").val();
+          $("#pmqueryloading").show();
+          $.ajax({
+            type: "GET",
+            url: "/querypubmed",
+            cache: true,
+            data: {
+              'query': queryInput
+            },
+            success : function(data) {
+              if (data.error) {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              } else {
+                $("#identifiers").val(data.identifiers.join(","));
+                 $("#query-form").dialog("close");
+                 $("#pmqueryloading").hide()
+              }
+            },
+            statusCode: {
+              404: function () {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              },
+              400: function () {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              },
+            },
+            error : function() {
               $("#pmqueryerror").show();
               $("#pmqueryloading").hide()
             },
-            400: function () {
-              $("#pmqueryerror").show();
-              $("#pmqueryloading").hide()
-            },
-          },
-          error : function() {
-            $("#pmqueryerror").show();
-            $("#pmqueryloading").hide()
-          },
-        });
+          });
 
+        },
       },
-      "Cancel": function() {
-        $("#pmqueryloading").hide()
-        $(this).dialog( "close" );
+      "Cancel": {
+        text: "Cancel",
+        class: "btn",
+        click: function() {
+          $("#pmqueryloading").hide()
+          $(this).dialog( "close" );
+        },
       },
     }
   });
