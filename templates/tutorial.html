@@ -3,25 +3,25 @@
   <head>
     <title>PPaxe</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel=stylesheet type=text/css href="{{ response['BASE_URL'] }}{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel='shortcut icon' type='image/x-icon' href='{{ response['BASE_URL'] }}{{ url_for('static', filename='favicon.ico') }}' />
+    <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
   </head>
   <body onload="myFunction()" style="margin:0;">
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <ul class="nav navbar-nav navbar-buttons">
-            <li><a href="{{ response['BASE_URL'] }}">HOME</a></li>
-            <li class="active-navbar"><a href="{{ response['BASE_URL'] }}/tutorial">TUTORIAL</a></li>
-            <li><a href="{{ response['BASE_URL'] }}/download">DOWNLOAD</a></li>
-            <li><a href="{{ response['BASE_URL'] }}/about">ABOUT</a></li>
+            <li><a href="/">HOME</a></li>
+            <li class="active-navbar"><a href="/tutorial">TUTORIAL</a></li>
+            <li><a href="/download">DOWNLOAD</a></li>
+            <li><a href="/about">ABOUT</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
             <li>
               <a href="https://compgen.bio.ub.edu">
-                <img class="compgen-logo" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='compgen-logo.png') }}"/>
+                <img class="compgen-logo" src="{{ url_for('static', filename='compgen-logo.png') }}"/>
                 CompGen
               </a>
             </li>
@@ -49,16 +49,16 @@
         </p>
 
 
-        <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut1.png') }}">
-          <img class="tut-img" width="1000px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut1.png') }}">
+        <a target="_blank" href="{{ url_for('static', filename='tut1.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut1.png') }}">
         </a>
 
         <p class="text-pixel">
           When searching more than <strong>30 identifiers</strong>, PPaxe will request an e-mail to send the results when available, as the search may take a while. Although the search can still be performed without providing an e-mail, doing so is highly encouraged, as it allows users to close the application and still recieve the results.
         </p>
 
-        <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut2.png') }}">
-          <img class="tut-img" width="700px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut2.png') }}">
+        <a target="_blank" href="{{ url_for('static', filename='tut2.png') }}">
+          <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut2.png') }}">
         </a>
 
         
@@ -71,32 +71,32 @@
         <p class="text-pixel">
           Once the search has been performed, the results will be displayed at the bottom of the page. A small summary table and an option to download the report as a PDF will appear at the top of the results section.
         </p>
-        <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut3.png') }}">
-          <img class="tut-img" width="250px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut3.png') }}">
+        <a target="_blank" href="{{ url_for('static', filename='tut3.png') }}">
+          <img class="tut-img" width="250px" src="{{ url_for('static', filename='tut3.png') }}">
         </a>
 
         <br>
         <p class="text-pixel">
           <strong>The Interactions</strong> found on the requested articles will be displayed on the "Interactions" table. This table includes a confidence value (which ranges from 0.5 to 1), the names of the proteins/genes, the PubMed identifier of the article, the publication year, and the sentence from which the interaction was retrieved (with the proteins displayed in blue, and the verbs in red). The table can be downloaded by clicking on the 'Download table' button.
         </p>
-        <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut4.png') }}">
-          <img class="tut-img" width="1000px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut4.png') }}">
+        <a target="_blank" href="{{ url_for('static', filename='tut4.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut4.png') }}">
         </a>
 
         <br>
         <p class="text-pixel">
           <strong>The Proteins table</strong> shows how many times each protein or gene symbol has appeared in the different sentences. Each column corresponds to the different contexts in which the protein symbol appears: <strong>Total Count</strong> is the sum of all the ocurrences of a particular protein symbol; <strong>Int. Count</strong> corresponds to the number of times a particular protein appears in a retrieved interaction; <strong>Left/Right Count</strong> refer to the times a symbol is present on the "left" or the "right" of a particular interaction, e.g: <it>A (left)</it> interacts with <it>B (right)</it>.
         </p>
-         <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut6.png') }}">
-          <img class="tut-img" width="1000px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut6.png') }}">
+         <a target="_blank" href="{{ url_for('static', filename='tut6.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut6.png') }}">
         </a>
 
 
         <p class="text-pixel">
           PPaxe also provides a <strong>Graph visualization</strong>. The "Center" button resets the visualization:
         </p>
-        <a target="_blank" href="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut5.png') }}">
-          <img class="tut-img" width="1000px" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='tut5.png') }}">
+        <a target="_blank" href="{{ url_for('static', filename='tut5.png') }}">
+          <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut5.png') }}">
         </a>
 
         <br>
@@ -109,7 +109,7 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="{{ response['BASE_URL'] }}{{ url_for('static', filename='back-to-top.js') }}"></script>
+      <script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
       <script>
       var myVar;
         function myFunction() {

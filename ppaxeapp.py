@@ -40,9 +40,8 @@ def prefix_route(route_function, prefix='', mask='{0}{1}'):
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 static_url = "/static"
 app = Flask(__name__) # create the application instance
-BASE_URL = ""
 if 'PPAXE_BASE_URL' in os.environ:
-    BASE_URL = os.environ['PPAXE_BASE_URL']
+    app.route = prefix_route(app.route, '/PPaxe')
 
 
 # FUNCTIONS
@@ -84,16 +83,15 @@ def home_form():
     identifiers = str()
     database    = str()
     response    = dict()
-    response['BASE_URL'] = BASE_URL
 
     if 'identifiers' in request.form:
         # Get Form parameters
-        response['search'] = True
         identifiers = request.form['identifiers']
         database = request.form['database']
         email = request.form['email']
         identifiers = re.split(",|\n|\r", identifiers)
         identifiers = [ident for ident in identifiers if ident]
+
         # Get articles from Pubmed or PMC
         source = str()
         try:
@@ -183,9 +181,7 @@ def tutorial():
     '''
     Tutorial page
     '''
-    response = dict()
-    response['BASE_URL'] = BASE_URL
-    return render_template('tutorial.html', response=response)
+    return render_template('tutorial.html')
 
 
 
@@ -194,9 +190,7 @@ def download():
     '''
     download page
     '''
-    response = dict()
-    response['BASE_URL'] = BASE_URL
-    return render_template('download.html', response=response)
+    return render_template('download.html')
 
 
 # -----------------
@@ -205,6 +199,4 @@ def about():
     '''
     About page
     '''
-    response = dict()
-    response['BASE_URL'] = BASE_URL
-    return render_template('about.html', response=response)
+    return render_template('about.html')
