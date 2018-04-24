@@ -24,9 +24,9 @@ from xml.dom import minidom
 # APP INITIALIZATION
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 static_url = "/static"
-if 'PPAXE_STATIC_URL' in os.environ:
-    static_url = os.environ['PPAXE_STATIC_URL'] + static_url
-app = Flask(__name__, static_url_path=static_url) # create the application instance
+app = Flask(__name__) # create the application instance
+if 'PPAXE_BASE_URL' in os.environ:
+    app.config["APPLICATION_ROOT"] = os.environ['PPAXE_BASE_URL']
 app.config.from_object(__name__) # load config from this file
 
 
