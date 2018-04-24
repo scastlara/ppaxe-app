@@ -23,21 +23,17 @@ from xml.dom import minidom
 
 
 
-class PrefixMiddleware(object):
+def prefix_route(route_function, prefix='', mask='{0}{1}'):
+  '''
+    Defines a new route function with a prefix.
+    The mask argument is a `format string` formatted with, in that order:
+      prefix, route
+  '''
+  def newroute(route, *args, **kwargs):
+    '''New function to prefix the route'''
+    return route_function(mask.format(prefix, route), *args, **kwargs)
+  return newroute
 
-    def __init__(self, app, prefix=''):
-        self.app = app
-        self.prefix = prefix
-
-    def __call__(self, environ, start_response):
-
-        if environ['PATH_INFO'].startswith(self.prefix):
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(self.prefix):]
-            environ['SCRIPT_NAME'] = self.prefix
-            return self.app(environ, start_response)
-        else:
-            start_response('404', [('Content-Type', 'text/plain')])
-            return ["This url does not belong to the app.".encode()]
 
 
 # APP INITIALIZATION
@@ -45,7 +41,7 @@ core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 static_url = "/static"
 app = Flask(__name__) # create the application instance
 if 'PPAXE_BASE_URL' in os.environ:
-    app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=os.environ['PPAXE_BASE_URL'])
+    app.route = prefix_route(app.route, '/PPaxe')
 
 
 # FUNCTIONS
