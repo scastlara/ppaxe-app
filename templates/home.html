@@ -3,26 +3,26 @@
 <head>
   <title>PPaxe</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  <link rel=stylesheet type=text/css href="{{ response['BASE_URL'] }}{{ url_for('static', filename='style.css') }}">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
+  <link rel='shortcut icon' type='image/x-icon' href='{{ response['BASE_URL'] }}{{ url_for('static', filename='favicon.ico') }}' />
 </head>
 <body onload="myFunction()" style="margin:0;">
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <ul class="nav navbar-nav navbar-buttons">
-          <li class="active-navbar"><a href="/">HOME</a></li>
-          <li><a href="/tutorial">TUTORIAL</a></li>
-          <li><a href="/download">DOWNLOAD</a></li>
-          <li><a href="/about">ABOUT</a></li>
+          <li class="active-navbar"><a href="{{ response['BASE_URL'] }}/">HOME</a></li>
+          <li><a href="{{ response['BASE_URL'] }}/tutorial">TUTORIAL</a></li>
+          <li><a href="{{ response['BASE_URL'] }}/download">DOWNLOAD</a></li>
+          <li><a href="{{ response['BASE_URL'] }}/about">ABOUT</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
           <li>
             <a href="https://compgen.bio.ub.edu">
-              <img class="compgen-logo" src="{{ url_for('static', filename='compgen-logo.png') }}"/>
+              <img class="compgen-logo" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='compgen-logo.png') }}"/>
               CompGen
             </a>
           </li>
@@ -31,8 +31,8 @@
     </nav>
     <div id="loader"></div>
     <div style="display:none;" class="content animate-bottom">
-      <a href="/">
-        <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
+      <a href="{{ response['BASE_URL'] }}/">
+        <img class="logo" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='logo.png') }}"/>
       </a>
       
       <div class="row equal">
@@ -40,7 +40,7 @@
           <div class="panel noborder panel-warning col-sm-6">
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
-              <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
+              <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
               <form id="ppaxeform" action="/" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
@@ -96,8 +96,8 @@
                 </ul>
                 <hr>
               <p>
-                For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="/tutorial">tutorial</a>.
-                To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="/about">about</a> section.
+                For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="{{ response['BASE_URL'] }}/tutorial">tutorial</a>.
+                To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="{{ response['BASE_URL'] }}/about">about</a> section.
               </p>
             </div>
           </div>
@@ -134,19 +134,19 @@
     <div style="display:none;" id="results-div" class="content results animate-bottom">
       <!-- Results -->
       <div class="results">
-        <a href="#0" class="cd-top" title="Back to Top">Top</a>
+        <a href="{{ response['BASE_URL'] }}#0" class="cd-top" title="Back to Top">Top</a>
         {% block body %}
           {% if response['error'] %}
             <h3>Invalid PubMed identifiers</h3>
           {% else %}
-            {% if response %}
+            {% if response['search'] %}
             <!-- A search -->
               <h1>Results</h1>
               <hr>
                 {% if response['nprots'] > 0 %}
                   <!-- With protein results -->
                   <!-- Download pdf report -->
-                  <a download=ppaxe-report.pdf href="{{ response['pdf'] }}" title='Download pdf document'>
+                  <a download=ppaxe-report.pdf href="{{ response['BASE_URL'] }}/{{ response['pdf'] }}" title='Download pdf document'>
                     <div class="download-pdf btn btn-default"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                       Download PDF</div>
                   </a>
@@ -209,9 +209,9 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>
+<script src="{{ response['BASE_URL'] }}{{ url_for('static', filename='cytoscape_template.js') }}"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
+<script src="{{ response['BASE_URL'] }}{{ url_for('static', filename='back-to-top.js') }}"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   $(document).ready(function(){
@@ -225,7 +225,7 @@
     });
   });
 </script>
-<script src="{{ url_for('static', filename='download-table.js') }}"></script>
+<script src="{{ response['BASE_URL'] }}{{ url_for('static', filename='download-table.js') }}"></script>
 
 <script>
 
@@ -275,7 +275,7 @@ $(document).ready(function(){
           $("#pmqueryloading").show();
           $.ajax({
             type: "GET",
-            url: "/querypubmed",
+            url: "{{ response['BASE_URL'] }}/querypubmed",
             cache: true,
             data: {
               'query': queryInput
