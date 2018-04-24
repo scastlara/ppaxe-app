@@ -57,7 +57,7 @@ class ReverseProxied(object):
             environ['wsgi.url_scheme'] = scheme
         return self.app(environ, start_response)
 
-        
+
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
@@ -105,6 +105,7 @@ def home_form():
 
     if 'identifiers' in request.form:
         # Get Form parameters
+        response['search'] = True
         identifiers = request.form['identifiers']
         database = request.form['database']
         email = request.form['email']

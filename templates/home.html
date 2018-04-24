@@ -139,7 +139,7 @@
           {% if response['error'] %}
             <h3>Invalid PubMed identifiers</h3>
           {% else %}
-            {% if response %}
+            {% if response['search'] %}
             <!-- A search -->
               <h1>Results</h1>
               <hr>
