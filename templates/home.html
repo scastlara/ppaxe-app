@@ -41,7 +41,7 @@
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ response['BASE_URL'] }}{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
-              <form id="ppaxeform" action="/" method="post">
+              <form id="ppaxeform" action="{{ response['BASE_URL'] }}" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
                 <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
