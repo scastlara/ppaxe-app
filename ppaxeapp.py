@@ -102,6 +102,7 @@ def home_form():
     identifiers = str()
     database    = str()
     response    = dict()
+    response['search'] = False
 
     if 'identifiers' in request.form:
         # Get Form parameters
