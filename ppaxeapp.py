@@ -23,25 +23,44 @@ from xml.dom import minidom
 
 
 
-def prefix_route(route_function, prefix='', mask='{0}{1}'):
-  '''
-    Defines a new route function with a prefix.
-    The mask argument is a `format string` formatted with, in that order:
-      prefix, route
-  '''
-  def newroute(route, *args, **kwargs):
-    '''New function to prefix the route'''
-    return route_function(mask.format(prefix, route), *args, **kwargs)
-  return newroute
-
-
-
 # APP INITIALIZATION
+class ReverseProxied(object):
+    '''Wrap the application in this middleware and configure the 
+    front-end server to add these headers, to let you quietly bind 
+    this to a URL other than / and to an HTTP scheme that is 
+    different than what is used locally.
+
+    In nginx:
+    location /myprefix {
+        proxy_pass http://192.168.0.1:5001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Script-Name /myprefix;
+        }
+
+    :param app: the WSGI application
+    '''
+    def __init__(self, app):
+        self.app = app
+
+    def __call__(self, environ, start_response):
+        script_name = environ.get('HTTP_X_SCRIPT_NAME', '')
+        if script_name:
+            environ['SCRIPT_NAME'] = script_name
+            path_info = environ['PATH_INFO']
+            if path_info.startswith(script_name):
+                environ['PATH_INFO'] = path_info[len(script_name):]
+
+        scheme = environ.get('HTTP_X_SCHEME', '')
+        if scheme:
+            environ['wsgi.url_scheme'] = scheme
+        return self.app(environ, start_response)
+
+        
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
-static_url = "/static"
 app = Flask(__name__) # create the application instance
-if 'PPAXE_BASE_URL' in os.environ:
-    app.route = prefix_route(app.route, '/PPaxe')
+app.wsgi_app = ReverseProxied(app.wsgi_app)
 
 
 # FUNCTIONS
