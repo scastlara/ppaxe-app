@@ -204,6 +204,9 @@ html {
   max-height: 600px;
 }
 
+#quick-help-body {
+  min-height: 375px;
+}
 
 #loader-small {
   position: inline;
@@ -229,7 +232,7 @@ html {
   background-color: #5bc0de !important;
   border-color: #46b8da !important;
 }
-}
+
 
 #loader {
   position: absolute;
