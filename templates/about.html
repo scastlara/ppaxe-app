@@ -12,10 +12,10 @@
       <nav class="navbar navbar-default">
         <div class="container-fluid">
           <ul class="nav navbar-nav navbar-buttons">
-            <li><a href="/">HOME</a></li>
-            <li><a href="/tutorial">TUTORIAL</a></li>
-            <li><a href="/download">DOWNLOAD</a></li>
-            <li class="active-navbar"><a href="/about">ABOUT</a></li>
+            <li><a href="{{ url_for('home_form') }}">HOME</a></li>
+            <li><a href="{{ url_for('tutorial') }}">TUTORIAL</a></li>
+            <li><a href="{{ url_for('download') }}">DOWNLOAD</a></li>
+            <li class="active-navbar"><a href="{{ url_for('about') }}">ABOUT</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
