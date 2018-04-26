@@ -13,10 +13,10 @@
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <ul class="nav navbar-nav navbar-buttons">
-          <li class="active-navbar"><a href="/">HOME</a></li>
-          <li><a href="/tutorial">TUTORIAL</a></li>
-          <li><a href="/download">DOWNLOAD</a></li>
-          <li><a href="/about">ABOUT</a></li>
+          <li class="active-navbar"><a href="{{ url_for('home_form') }}">HOME</a></li>
+          <li><a href="{{ url_for('tutorial') }}">TUTORIAL</a></li>
+          <li><a href="{{ url_for('download') }}">DOWNLOAD</a></li>
+          <li><a href="{{ url_for('about') }}">ABOUT</a></li>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
@@ -41,7 +41,7 @@
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
-              <form id="ppaxeform" action="/" method="post">
+              <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
                 <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
@@ -96,7 +96,7 @@
                 </ul>
                 <hr>
               <p>
-                For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="/tutorial">tutorial</a>.
+                For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="{{ url_for('tutorial') }}">tutorial</a>.
                 To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="/about">about</a> section.
               </p>
             </div>
@@ -275,7 +275,7 @@ $(document).ready(function(){
           $("#pmqueryloading").show();
           $.ajax({
             type: "GET",
-            url: "/querypubmed",
+            url: "{{ url_for('querypubmed') }}",
             cache: true,
             data: {
               'query': queryInput
