@@ -20,11 +20,12 @@ from pycorenlp import StanfordCoreNLP
 from flask import jsonify
 import requests
 from xml.dom import minidom
-
+from joblib import Parallel, delayed
 
 
 core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
 app = Flask(__name__) # create the application instance
+NJOBS = 4
 
 # FUNCTIONS
 # -----------------------------------------------------------------------
@@ -53,6 +54,17 @@ def send_mail(send_from, send_to, subject, attachment=None):
     part.add_header('Content-Disposition', 'attachment; filename="ppaxe-report.pdf"')
     msg.attach(part)
     return msg
+
+
+def parallel_predict_interactions(sentence):
+    '''
+    Parallelizes the prediction of interactions
+    '''
+    sentence.annotate()
+    sentence.get_candidates()
+    for candidate in sentence.candidates:
+        candidate.predict()
+    return sentence
 
 
 # VIEWS
@@ -90,8 +102,9 @@ def home_form():
         else:
             source = "fulltext"
         for article in query.articles:
-            article.predict_interactions(source)
-
+            article.extract_sentences(source=source)
+            sentences = Parallel(n_jobs=NJOBS, backend="multiprocessing")(map(delayed(parallel_predict_interactions), article.sentences))
+            article.sentences = sentences
         summary = report.ReportSummary(query)
         summary.graphsummary.makesummary()
         summary.protsummary.makesummary()
