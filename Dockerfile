@@ -56,7 +56,8 @@ RUN wget https://nlp.stanford.edu/software/stanford-corenlp-full-2017-06-09.zip 
     && wget https://nlp.stanford.edu/software/stanford-english-corenlp-2017-06-09-models.jar \
          -O /stanford-corenlp-full-2017-06-09/stanford-english-corenlp-2017-06-09-models.jar 
 
-RUN git --no-pager clone https://github.com/CompGenLabUB/ppaxe.git
+RUN git --no-pager clone https://github.com/scastlara/ppaxe.git
+#        # repo clone at https://github.com/CompGenLabUB/ppaxe.git
 RUN sed -i 's%\.\./%/stanford-corenlp-full-2017-06-09/%' \
            /ppaxe/ppaxe/data/server.properties
 
@@ -72,6 +73,7 @@ RUN wget https://www.dropbox.com/s/t6qcl19g536c0zu/RF_scikit.pkl?dl=0 \
 RUN pip install flask
 RUN pip install uwsgi
 RUN pip install xhtml2pdf
+RUN pip install joblib
 
 WORKDIR /ppaxe
     
@@ -98,7 +100,13 @@ if __name__ == "__main__":\n\
 # RUN cat /ppaxe/ppaxe-app/wsgi.py
 
 ##
-## fake user... set up your own \n\
+## System params... set up your own \n\
+##
+ENV PPAXE_THREADS=4
+ENV CORENLP_THREADS=4
+ENV CORENLP_MAXMEM=4g
+##
+## Fake user... set up your own \n\
 ##
 ENV PPAXE_EUSER="www"
 ENV PPAXE_EPASSW="blabla"
@@ -109,10 +117,10 @@ RUN \
 echo "#-->ENV: USER ${PPAXE_EUSER}"\n\
 echo "#-->ENV: EMAIL ${PPAXE_EMAIL}"\n\
 export SPD="/stanford-corenlp-full-2017-06-09"\n\
-nohup java -mx1g \\\n\
+nohup java -Xms${CORENLP_MAXMEM} -Xmx${CORENLP_MAXMEM} \\\n\
          -cp $SPD/stanford-corenlp-3.8.0.jar:$SPD/stanford-english-corenlp-2017-06-09-models.jar \\\n\
          edu.stanford.nlp.pipeline.StanfordCoreNLPServer \\\n\
-         -port 9000 \\\n\
+         -port 9000 -threads ${CORENLP_THREADS} \\\n\
          -serverProperties /ppaxe/ppaxe/data/server.properties \\\n\
          2> /dev/null 1>&2 &\n\
 \n\
