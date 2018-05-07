@@ -132,7 +132,7 @@ cd /ppaxe/ppaxe-app\n\
 uwsgi --uid www --gid www \\\n\
       --socket 127.0.0.1:5000 \\\n\
       --protocol http -w ppaxeapp:app \\\n\
-       1>&2 \n' \
+      2> /dev/null 1>&2 \n' \
   > /ppaxe/entrypoint.sh \
   && chmod +x /ppaxe/entrypoint.sh
 
