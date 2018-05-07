@@ -41,7 +41,7 @@
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
-              <div id="identifiers-num"><span id="identifiers-num-span">0</span> identifiers</div>
+              <div id="identifiers-num"><span id="identifiers-num-span" class="num-cool">0</span> identifiers</div>
               <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
@@ -233,8 +233,12 @@
 $(document).ready(function(){
 
   updateIdCount = function(num) {
-    if (num >= 30) {$('#identifiers-num-span').addClass('num-warning')}
-    else           {$('#identifiers-num-span').removeClass('num-warning')};
+    $('#identifiers-num-span').removeClass('num-cool');
+    $('#identifiers-num-span').removeClass('num-warning');
+    $('#identifiers-num-span').removeClass('num-danger');
+    if (num < 30) {$('#identifiers-num-span').addClass('num-cool')}
+    else if (num >=30 && num < 100) {$('#identifiers-num-span').addClass('num-warning')}
+    else {$('#identifiers-num-span').addClass('num-danger')};
     $('#identifiers-num-span').html(num);
   }
 

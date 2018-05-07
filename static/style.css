@@ -25,6 +25,7 @@
   display: block;
   margin-right: auto;
   margin-left: auto;
+  max-width: 100%;
 }
 
 #query-form {
@@ -47,6 +48,17 @@
   font-weight: bolder;
   color: #F0AD4E;
 }
+
+.num-cool {
+  font-weight: bolder;
+  color: #28A745;
+}
+
+.num-danger {
+  font-weight: bolder;
+  color: #DC3545;
+}
+
 
 .tutorial-subtitle{
   display: inline-block;
