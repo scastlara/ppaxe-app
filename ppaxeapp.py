@@ -71,10 +71,10 @@ class PrefixMiddleware(object):
             start_response('404', [('Content-Type', 'text/plain')])
             return ["This url does not belong to the app.".encode()]
 
-core.NLP = StanfordCoreNLP(os.environ['PPAXE_CORENLP'])
+core.NLP = StanfordCoreNLP(os.environ.get('PPAXE_CORENLP','http://127.0.0.1:9000'))
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
-NJOBS = 4
+NJOBS = os.environ.get('PPAXE_THREADS', 4)
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
 
 # FUNCTIONS
@@ -187,9 +187,9 @@ def home_form():
             if email:
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
-                server.login(os.environ['PPAXE_EUSER'], os.environ['PPAXE_EPASSW'])
-                msg = send_mail(os.environ['PPAXE_EMAIL'], email, 'PPaxe results', response['pdf-plain'])
-                server.sendmail(os.environ['PPAXE_EMAIL'], email, msg.as_string())
+                server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
+                msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, 'PPaxe results', response['pdf-plain'])
+                server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, msg.as_string())
 
     return render_template('home.html', identifiers=identifiers, response=response)
 
