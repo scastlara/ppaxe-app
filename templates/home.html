@@ -30,7 +30,7 @@
       </div>
     </nav>
     <div id="loader"></div>
-    <div style="display:none;" class="content animate-bottom">
+    <div id="content-form" style="display:none;" class="content animate-bottom">
       <a href="/">
         <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
       </a>
@@ -41,6 +41,7 @@
             <div class="panel-heading">Retrieve interactions from articles</div>
             <div class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
+              <div id="identifiers-num"><span id="identifiers-num-span">0</span> identifiers</div>
               <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post">
               <div class="form-group">
                 <label for="identifiers">Pubmed identifiers:</label>
@@ -230,6 +231,13 @@
 <script>
 
 $(document).ready(function(){
+
+  updateIdCount = function(num) {
+    if (num >= 30) {$('#identifiers-num-span').addClass('num-warning')}
+    else           {$('#identifiers-num-span').removeClass('num-warning')};
+    $('#identifiers-num-span').html(num);
+  }
+
   var ppaxeform;
 
   // open dialog to confirm/email
@@ -255,7 +263,9 @@ $(document).ready(function(){
     },
     close: function() {
       $(this).dialog( "close" );
-      ppaxeform.submit();
+      document.getElementById("loader").style.display = "none";
+      $("#content-form").css('display', 'inline-block');
+      //ppaxeform.submit();
     }
   });
 
@@ -286,8 +296,9 @@ $(document).ready(function(){
                 $("#pmqueryloading").hide()
               } else {
                 $("#identifiers").val(data.identifiers.join(","));
-                 $("#query-form").dialog("close");
-                 $("#pmqueryloading").hide()
+                updateIdCount(data.identifiers.length);
+                $("#query-form").dialog("close");
+                $("#pmqueryloading").hide()
               }
             },
             statusCode: {
@@ -321,6 +332,19 @@ $(document).ready(function(){
 
   $("#query-form-btn").on("click", function(){
     $("#query-form").dialog( "open" );
+  });
+
+
+
+  $('#identifiers').on('input', function() {
+    // Count PubMed identifiers
+    var re = /,|\n|\r/;
+    var idents = $('#identifiers').val().split(re);
+    idents = $.grep(idents, function(elem) {
+      return elem
+    });
+    var num = idents.length;
+    updateIdCount(num);
   });
 
   $('#ppaxeform').submit(function() {
