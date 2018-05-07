@@ -74,7 +74,7 @@ class PrefixMiddleware(object):
 core.NLP = StanfordCoreNLP(os.environ.get('PPAXE_CORENLP','http://127.0.0.1:9000'))
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
-NJOBS = os.environ.get('PPAXE_THREADS', 4)
+NJOBS = int(os.environ.get('PPAXE_THREADS', 4))
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
 
 # FUNCTIONS
