@@ -135,8 +135,12 @@
        <div id="server-error">
             <h3>Internal Server Error</h3>
             <hr>
-            Something went wrong, try again later.
-
+            Something went wrong, try again later.<br>
+            {% if response['debug'] %}
+              <div id="server-error-code">
+                {{ response['server-error'] }}
+              </div>
+            {% endif %}
         </div>
       {% endif %}
 

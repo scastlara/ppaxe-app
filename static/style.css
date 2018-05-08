@@ -44,8 +44,18 @@
   margin-left: 15%;
   margin-top: 100px;
   width: 70%;
-  height: 300px;
+  min-height: 300px;
+  max-height: 800px;
   font-family: FreePixel !important;
+}
+
+#server-error #server-error-code {
+  background-color: #F1F1F1;
+  white-space: pre;
+  font-size: 10px;
+  overflow-x: scroll;
+  overflow-y: scroll;
+  max-height: 500px;
 }
 
 #server-error h3 {

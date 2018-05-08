@@ -192,7 +192,14 @@ def home_form():
                     msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, 'PPaxe results', response['pdf-plain'])
                     server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, msg.as_string())
         except Exception as err:
-            response['server-error'] = "Internal Server Error"
+            debugmsg = int(os.environ.get('PPAXE_DEBUG', 0))
+            if debugmsg:
+                response['debug'] = True
+                response['server-error'] = err
+            else:
+                response['debug'] = False
+                response['server-error'] = "Internal Server Error"
+
     return render_template('home.html', identifiers=identifiers, response=response)
 
 
