@@ -131,10 +131,18 @@
 
     </div>
 
+     {% if response['server-error'] %}
+       <div id="server-error">
+            <h3>Internal Server Error</h3>
+            <hr>
+            Something went wrong, try again later.
+
+        </div>
+      {% endif %}
 
     <div style="display:none;" id="results-div" class="content results animate-bottom">
       <!-- Results -->
-      <div class="results">
+      <div id="results-div-sub" class="results">
         <a href="#0" class="cd-top" title="Back to Top">Top</a>
         {% block body %}
           {% if response['error'] %}
@@ -144,7 +152,9 @@
             <!-- A search -->
               <h1>Results</h1>
               <hr>
-                {% if response['nprots'] > 0 %}
+                {% if response['server-error'] %} 
+                  
+                {% elif response['nprots'] > 0 %}
                   <!-- With protein results -->
                   <!-- Download pdf report -->
                   <a download=ppaxe-report.pdf href="{{ response['pdf'] }}" title='Download pdf document'>
@@ -200,6 +210,7 @@
                   {% else %}
                     No results
                   {% endif %} <!-- nprots > 0 -->
+                
 
               {% endif %} <!-- nprots != None -->
 
@@ -456,7 +467,6 @@ $(document).ready(function(){
         });
     } );
 </script>
-
 
 
 

@@ -147,50 +147,52 @@ def home_form():
             response['error'] = "PMQuery"
 
         # Retrieve interactions from 'source'
-        if database == "PUBMED":
-            source = "abstract"
-        else:
-            source = "fulltext"
-        for article in query.articles:
-            article.extract_sentences(source=source)
-            sentences = Parallel(n_jobs=NJOBS, backend="multiprocessing")(map(delayed(parallel_predict_interactions), article.sentences))
-            article.sentences = sentences
-        summary = report.ReportSummary(query)
-        summary.graphsummary.makesummary()
-        summary.protsummary.makesummary()
-        response['nints']  = summary.graphsummary.numinteractions
-        response['nprots'] = summary.protsummary.totalprots
+        try:
+            if database == "PUBMED":
+                source = "abstract"
+            else:
+                source = "fulltext"
+            for article in query.articles:
+                article.extract_sentences(source=source)
+                sentences = Parallel(n_jobs=NJOBS, backend="multiprocessing")(map(delayed(parallel_predict_interactions), article.sentences))
+                article.sentences = sentences
+            summary = report.ReportSummary(query)
+            summary.graphsummary.makesummary()
+            summary.protsummary.makesummary()
+            response['nints']  = summary.graphsummary.numinteractions
+            response['nprots'] = summary.protsummary.totalprots
 
-        if response['nprots'] > 0:
-            response['prot_table'] = summary.protsummary.table_to_html()
-        else:
-            response['nprots'] = 0
+            if response['nprots'] > 0:
+                response['prot_table'] = summary.protsummary.table_to_html()
+            else:
+                response['nprots'] = 0
 
-        if response['nints'] > 0:
-            # Tables
-            response['int_table'] = summary.graphsummary.table_to_html()
-            response['sum_table'] = summary.summary_table()
-            # JSON graph
-            response['graph'] = summary.graphsummary.graph_to_json()
-            # Plots
-            response['plots'] = dict()
-            response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
-            response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
-            response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
-            response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
-            response['today'] = datetime.date.today()
-            response['database'] = database
-            response['pdf-plain'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
-            response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf-plain'].getvalue())
+            if response['nints'] > 0:
+                # Tables
+                response['int_table'] = summary.graphsummary.table_to_html()
+                response['sum_table'] = summary.summary_table()
+                # JSON graph
+                response['graph'] = summary.graphsummary.graph_to_json()
+                # Plots
+                response['plots'] = dict()
+                response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
+                response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
+                response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
+                response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
+                response['today'] = datetime.date.today()
+                response['database'] = database
+                response['pdf-plain'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
+                response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf-plain'].getvalue())
 
 
-            if email:
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
-                msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, 'PPaxe results', response['pdf-plain'])
-                server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, msg.as_string())
-
+                if email:
+                    server = smtplib.SMTP('smtp.gmail.com', 587)
+                    server.starttls()
+                    server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
+                    msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, 'PPaxe results', response['pdf-plain'])
+                    server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, msg.as_string())
+        except Exception as err:
+            response['server-error'] = "Internal Server Error"
     return render_template('home.html', identifiers=identifiers, response=response)
 
 
