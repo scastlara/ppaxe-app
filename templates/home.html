@@ -257,12 +257,14 @@ $(document).ready(function(){
         $(this).dialog( "close" );
         $("#email-input").val(email.val());
         ppaxeform.submit();
-
+        document.getElementById("loader").style.display = "inline";
+        $("#content-form").css('display', 'none');
       },
       "Don't send mail": function() {
         $(this).dialog( "close" );
         ppaxeform.submit();
-
+        document.getElementById("loader").style.display = "inline";
+        $("#content-form").css('display', 'none');
       }
     },
     close: function() {
