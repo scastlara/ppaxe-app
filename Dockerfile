@@ -145,7 +145,7 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
     cd /ppaxe/ppaxe-app;\n\
     gunicorn -w ${GUNICORN_THREADS} \\\n\
              --bind=127.0.0.1:5000  \\\n\
-             --timeout 60 \\\n\ 
+             --timeout 600 \\\n\ 
              ppaxeapp:app \\\n\ 
              > /ppaxe/logs/gunicorn.log \\\n\
              2> /ppaxe/logs/gunicorn.err; \n\
@@ -159,7 +159,7 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
     cd /ppaxe/ppaxe-app;\n\
     gunicorn -w ${GUNICORN_THREADS} \\\n\
              --bind=127.0.0.1:5000  \\\n\
-             --timeout 60 \\\n\ 
+             --timeout 600 \\\n\ 
              ppaxeapp:app \\\n\ 
              2> /dev/null 1>&2; \n\
   fi\n' \
