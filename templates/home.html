@@ -166,25 +166,37 @@
                       Download PDF</div>
                   </a>
                   <br><br>
-                  <!-- Summary table -->
-                  {{ response['sum_table']|safe }}
 
-                  <br>
-                  <hr>
-                  <table class="summarytable">
-                    <tr>
-                      <td>Download time</td>
-                      <td>{{ response['time_download'] }} seconds</td>
-                    </tr>
-                    <tr>
-                      <td>Analysis time</td>
-                      <td>{{ response['time_analysis'] }} seconds</td>
-                    </tr>
-                    <tr>
-                      <td>Report time</td>
-                      <td>{{ response['time_report'] }} seconds</td>
-                    </tr>
-                  </table>
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <!-- Summary table -->
+                      {{ response['sum_table']|safe }}
+                    </div>
+                    <div class="col-sm-6">
+                      <table class="summarytable">
+                        <tr>
+                          <td>{{response['source']}}s from</td>
+                          <td>{{ response['database'] }}</td>
+                        </tr>
+                        <tr>
+                          <td>Download time</td>
+                          <td>{{ response['time_download'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>CoreNLP time</td>
+                          <td>{{ response['time_corenlp'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>Analysis time</td>
+                          <td>{{ response['time_analysis'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>Report time</td>
+                          <td>{{ response['time_report'] }} seconds</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
 
                   {% if response['nints'] > 0 %}
                   <!-- With interactions -->

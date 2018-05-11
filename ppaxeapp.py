@@ -111,7 +111,6 @@ def parallel_predict_interactions(sentence):
     '''
     Parallelizes the prediction of interactions
     '''
-    sentence.annotate()
     sentence.get_candidates()
     for candidate in sentence.candidates:
         candidate.predict()
@@ -133,8 +132,10 @@ def home_form():
     if 'identifiers' in request.form:
         # Get Form parameters
         response['search'] = True
+        response['njobs']  = NJOBS
         identifiers = request.form['identifiers']
         database = request.form['database']
+        response['database'] = database
         email = request.form['email']
         identifiers = re.split(",|\n|\r", identifiers)
         identifiers = [ident for ident in identifiers if ident]
@@ -156,13 +157,20 @@ def home_form():
                 source = "abstract"
             else:
                 source = "fulltext"
-            start_analysis = timer()
+            response['source'] = source.title()
+
+            time_corenlp = 0
+            time_analysis = 0
             for article in query.articles:
                 article.extract_sentences(source=source)
-                sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(map(delayed(parallel_predict_interactions), article.sentences))
-                article.sentences = sentences
-            end_analysis = timer()
-            time_analysis = (end_analysis - start_analysis)
+                start_corenlp = timer()
+                sentences = [ sentence.annotate() for sentence in article.sentences ]
+                end_corenlp = timer()
+                time_corenlp += (end_corenlp - start_corenlp)
+                start_analysis = timer()
+                article.sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(delayed(parallel_predict_interactions)(sentence) for sentence in article.sentences)
+                end_analysis = timer()
+                time_analysis +=(end_analysis - start_analysis)
             start_report = timer()
             summary = report.ReportSummary(query)
             summary.graphsummary.makesummary()
@@ -203,6 +211,7 @@ def home_form():
 
             # Save execution time for different processes
             response['time_download'] = round(time_download, 3)
+            response['time_corenlp'] = round(time_corenlp, 3)
             response['time_analysis'] = round(time_analysis, 3)
             response['time_report']   = round(time_report, 3)
 
