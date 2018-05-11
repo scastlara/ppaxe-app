@@ -154,7 +154,7 @@ def home_form():
                 source = "fulltext"
             for article in query.articles:
                 article.extract_sentences(source=source)
-                sentences = Parallel(n_jobs=NJOBS, backend="loky")(map(delayed(parallel_predict_interactions), article.sentences))
+                sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(map(delayed(parallel_predict_interactions), article.sentences))
                 article.sentences = sentences
             summary = report.ReportSummary(query)
             summary.graphsummary.makesummary()
