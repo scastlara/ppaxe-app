@@ -72,9 +72,7 @@ RUN wget https://www.dropbox.com/s/t6qcl19g536c0zu/RF_scikit.pkl?dl=0 \
 # installing web app
 
 RUN pip install flask
-RUN pip install uwsgi
 RUN pip install xhtml2pdf
-RUN pip install -U "loky==2.1.1"
 # RUN pip install -U "joblib==0.11"
 
 # Ensuring the joblib is capable of running "loky" parallel mode
@@ -95,8 +93,6 @@ RUN addgroup --gid 1000 www \
                --no-create-home --system www \
     && mkdir -vp /ppaxe/logs
 
-RUN apt-get install -y uwsgi-plugin-python
-    
 #    
 # preparing script to launch container services
 
@@ -113,7 +109,7 @@ if __name__ == "__main__":\n\
 ##
 ENV PPAXE_DEBUG=0
 ENV PPAXE_THREADS=4
-ENV UWSGI_THREADS=4
+ENV GUNICORN_THREADS=4
 ENV CORENLP_THREADS=4
 ENV CORENLP_MAXMEM=4g
 ##
@@ -123,6 +119,10 @@ ENV PPAXE_EUSER="www"
 ENV PPAXE_EPASSW="blabla"
 ENV PPAXE_EMAIL="www@localhost"
 
+
+# Installing gunicorn
+RUN pip install gunicorn
+
 RUN \
   echo '#!/bin/bash\n\
 echo "#-->ENV: USER ${PPAXE_EUSER}"\n\
@@ -130,7 +130,6 @@ echo "#-->ENV: EMAIL ${PPAXE_EMAIL}"\n\
 export SPD="/stanford-corenlp-full-2017-06-09"\n\
 \n\
 export FLASK_APP=/ppaxe/ppaxe-app/ppaxeapp.py\n\
-export UWSGI_EXTRA_OPTIONS="--plugins=python27"\n\
 export PPAXE_CORENLP="http://127.0.0.1:9000"\n\
 export PPAXE_DEBUG PPAXE_THREADS PPAXE_EUSER PPAXE_EPASSW PPAXE_EMAIL\n\
 \n\
@@ -144,12 +143,12 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
              > /ppaxe/logs/core.log \\\n\
             2> /ppaxe/logs/core.err &\n\
     cd /ppaxe/ppaxe-app;\n\
-    uwsgi --uid www --gid www \\\n\
-          --http-workers ${UWSGI_THREADS} \\\n\
-          --socket 127.0.0.1:5000 \\\n\
-          --protocol http -w ppaxeapp:app \\\n\
-        > /ppaxe/logs/wsgi.log \\\n\
-       2> /ppaxe/logs/wsgi.err; \n\
+    gunicorn -w ${GUNICORN_THREADS} \\\n\
+             --bind=127.0.0.1:5000  \\\n\
+             --timeout 60 \\\n\ 
+             ppaxeapp:app \\\n\ 
+             > /ppaxe/logs/gunicorn.log \\\n\
+             2> /ppaxe/logs/gunicorn.err; \n\
   else\n\
     nohup java -Xms${CORENLP_MAXMEM} -Xmx${CORENLP_MAXMEM} \\\n\
                -cp $SPD/stanford-corenlp-3.8.0.jar:$SPD/stanford-english-corenlp-2017-06-09-models.jar \\\n\
@@ -158,11 +157,11 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
                -serverProperties /ppaxe/ppaxe/data/server.properties \\\n\
             2> /dev/null 1>&2 &\n\
     cd /ppaxe/ppaxe-app;\n\
-    uwsgi --uid www --gid www \\\n\
-          --http-workers ${UWSGI_THREADS} \\\n\
-          --socket 127.0.0.1:5000 \\\n\
-          --protocol http -w ppaxeapp:app \\\n\
-          2> /dev/null 1>&2; \n\
+    gunicorn -w ${GUNICORN_THREADS} \\\n\
+             --bind=127.0.0.1:5000  \\\n\
+             --timeout 60 \\\n\ 
+             ppaxeapp:app \\\n\ 
+             2> /dev/null 1>&2; \n\
   fi\n' \
   > /ppaxe/entrypoint.sh \
   && chmod +x /ppaxe/entrypoint.sh
