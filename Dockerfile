@@ -56,7 +56,8 @@ RUN wget https://nlp.stanford.edu/software/stanford-corenlp-full-2017-06-09.zip 
     && wget https://nlp.stanford.edu/software/stanford-english-corenlp-2017-06-09-models.jar \
          -O /stanford-corenlp-full-2017-06-09/stanford-english-corenlp-2017-06-09-models.jar 
 
-RUN git --no-pager clone https://github.com/scastlara/ppaxe.git
+RUN echo "# Installing ppaxe lib..." \
+    && git --no-pager clone https://github.com/scastlara/ppaxe.git
 #        # repo clone at https://github.com/CompGenLabUB/ppaxe.git
 RUN sed -i 's%\.\./%/stanford-corenlp-full-2017-06-09/%' \
            /ppaxe/ppaxe/data/server.properties
@@ -73,18 +74,26 @@ RUN wget https://www.dropbox.com/s/t6qcl19g536c0zu/RF_scikit.pkl?dl=0 \
 RUN pip install flask
 RUN pip install uwsgi
 RUN pip install xhtml2pdf
-RUN pip install joblib
+RUN pip install -U "loky==2.1.1"
+# RUN pip install -U "joblib==0.11"
+
+# Ensuring the joblib is capable of running "loky" parallel mode
+RUN mkdir -vp /ppaxe/install \
+    && cd /ppaxe/install \
+    && git clone git://github.com/joblib/joblib.git \
+    && cd joblib && pip install .
 
 WORKDIR /ppaxe
     
-RUN echo "# Installing web app" \
+RUN echo "# Installing web app..." \
     && git --no-pager clone https://github.com/scastlara/ppaxe-app.git
-    
+#        # repo clone at https://github.com/CompGenLabUB/ppaxe-app.git
+
 RUN addgroup --gid 1000 www \
     && adduser --gid 1000 --uid 1000 \
                --shell /bin/bash \
-               --no-create-home --system www
-#    && mkdir -vp /ppaxe/logs
+               --no-create-home --system www \
+    && mkdir -vp /ppaxe/logs
 
 RUN apt-get install -y uwsgi-plugin-python
     
@@ -102,7 +111,9 @@ if __name__ == "__main__":\n\
 ##
 ## System params... set up your own \n\
 ##
+ENV PPAXE_DEBUG=0
 ENV PPAXE_THREADS=4
+ENV UWSGI_THREADS=4
 ENV CORENLP_THREADS=4
 ENV CORENLP_MAXMEM=4g
 ##
@@ -117,26 +128,46 @@ RUN \
 echo "#-->ENV: USER ${PPAXE_EUSER}"\n\
 echo "#-->ENV: EMAIL ${PPAXE_EMAIL}"\n\
 export SPD="/stanford-corenlp-full-2017-06-09"\n\
-nohup java -Xms${CORENLP_MAXMEM} -Xmx${CORENLP_MAXMEM} \\\n\
-         -cp $SPD/stanford-corenlp-3.8.0.jar:$SPD/stanford-english-corenlp-2017-06-09-models.jar \\\n\
-         edu.stanford.nlp.pipeline.StanfordCoreNLPServer \\\n\
-         -port 9000 -threads ${CORENLP_THREADS} \\\n\
-         -serverProperties /ppaxe/ppaxe/data/server.properties \\\n\
-         2> /dev/null 1>&2 &\n\
 \n\
 export FLASK_APP=/ppaxe/ppaxe-app/ppaxeapp.py\n\
 export UWSGI_EXTRA_OPTIONS="--plugins=python27"\n\
 export PPAXE_CORENLP="http://127.0.0.1:9000"\n\
-cd /ppaxe/ppaxe-app\n\
+export PPAXE_DEBUG PPAXE_THREADS PPAXE_EUSER PPAXE_EPASSW PPAXE_EMAIL\n\
 \n\
-uwsgi --uid www --gid www \\\n\
-      --socket 127.0.0.1:5000 \\\n\
-      --protocol http -w ppaxeapp:app \\\n\
-      2> /dev/null 1>&2 \n' \
+if [ "$PPAXE_DEBUG" = "1" ];\n\
+  then\n\
+    nohup java -Xms${CORENLP_MAXMEM} -Xmx${CORENLP_MAXMEM} \\\n\
+               -cp $SPD/stanford-corenlp-3.8.0.jar:$SPD/stanford-english-corenlp-2017-06-09-models.jar \\\n\
+               edu.stanford.nlp.pipeline.StanfordCoreNLPServer \\\n\
+               -port 9000 -threads ${CORENLP_THREADS} \\\n\
+               -serverProperties /ppaxe/ppaxe/data/server.properties \\\n\
+             > /ppaxe/logs/core.log \\\n\
+            2> /ppaxe/logs/core.err &\n\
+    cd /ppaxe/ppaxe-app;\n\
+    uwsgi --uid www --gid www \\\n\
+          --http-workers ${UWSGI_THREADS} \\\n\
+          --socket 127.0.0.1:5000 \\\n\
+          --protocol http -w ppaxeapp:app \\\n\
+        > /ppaxe/logs/wsgi.log \\\n\
+       2> /ppaxe/logs/wsgi.err; \n\
+  else\n\
+    nohup java -Xms${CORENLP_MAXMEM} -Xmx${CORENLP_MAXMEM} \\\n\
+               -cp $SPD/stanford-corenlp-3.8.0.jar:$SPD/stanford-english-corenlp-2017-06-09-models.jar \\\n\
+               edu.stanford.nlp.pipeline.StanfordCoreNLPServer \\\n\
+               -port 9000 -threads ${CORENLP_THREADS} \\\n\
+               -serverProperties /ppaxe/ppaxe/data/server.properties \\\n\
+            2> /dev/null 1>&2 &\n\
+    cd /ppaxe/ppaxe-app;\n\
+    uwsgi --uid www --gid www \\\n\
+          --http-workers ${UWSGI_THREADS} \\\n\
+          --socket 127.0.0.1:5000 \\\n\
+          --protocol http -w ppaxeapp:app \\\n\
+          2> /dev/null 1>&2; \n\
+  fi\n' \
   > /ppaxe/entrypoint.sh \
   && chmod +x /ppaxe/entrypoint.sh
 
-# RUN cat /ppaxe/entrypoint.sh
+RUN cat /ppaxe/entrypoint.sh
     
 EXPOSE 5000
     
