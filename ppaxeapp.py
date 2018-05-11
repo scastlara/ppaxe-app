@@ -21,6 +21,7 @@ from flask import jsonify
 import requests
 from xml.dom import minidom
 from joblib import Parallel, delayed
+from timeit import default_timer as timer
 
 class ReverseProxied(object):
     '''Wrap the application in this middleware and configure the 
@@ -140,11 +141,14 @@ def home_form():
 
         # Get articles from Pubmed or PMC
         source = str()
+        start_download = timer()
         try:
             query = core.PMQuery(ids=identifiers, database=database)
             query.get_articles()
         except PubMedQueryError:
             response['error'] = "PMQuery"
+        end_download = timer()
+        time_download = (end_download - start_download)
 
         # Retrieve interactions from 'source'
         try:
@@ -152,10 +156,14 @@ def home_form():
                 source = "abstract"
             else:
                 source = "fulltext"
+            start_analysis = timer()
             for article in query.articles:
                 article.extract_sentences(source=source)
                 sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(map(delayed(parallel_predict_interactions), article.sentences))
                 article.sentences = sentences
+            end_analysis = timer()
+            time_analysis = (end_analysis - start_analysis)
+            start_report = timer()
             summary = report.ReportSummary(query)
             summary.graphsummary.makesummary()
             summary.protsummary.makesummary()
@@ -183,14 +191,21 @@ def home_form():
                 response['database'] = database
                 response['pdf-plain'] = create_pdf(render_template('pdf.html', identifiers=identifiers, response=response))
                 response['pdf'] = "data:application/pdf;base64," + base64.b64encode(response['pdf-plain'].getvalue())
-
-
                 if email:
                     server = smtplib.SMTP('smtp.gmail.com', 587)
                     server.starttls()
                     server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
                     msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, 'PPaxe results', response['pdf-plain'])
                     server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), email, msg.as_string())
+
+            end_report = timer()
+            time_report = (end_report - start_report)
+
+            # Save execution time for different processes
+            response['time_download'] = round(time_download, 3)
+            response['time_analysis'] = round(time_analysis, 3)
+            response['time_report']   = round(time_report, 3)
+
         except Exception as err:
             debugmsg = int(os.environ.get('PPAXE_DEBUG', 0))
             if debugmsg:

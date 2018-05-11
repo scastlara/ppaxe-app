@@ -169,6 +169,23 @@
                   <!-- Summary table -->
                   {{ response['sum_table']|safe }}
 
+                  <br>
+                  <hr>
+                  <table class="summarytable">
+                    <tr>
+                      <td>Download time</td>
+                      <td>{{ response['time_download'] }} seconds</td>
+                    </tr>
+                    <tr>
+                      <td>Analysis time</td>
+                      <td>{{ response['time_analysis'] }} seconds</td>
+                    </tr>
+                    <tr>
+                      <td>Report time</td>
+                      <td>{{ response['time_report'] }} seconds</td>
+                    </tr>
+                  </table>
+
                   {% if response['nints'] > 0 %}
                   <!-- With interactions -->
                     <br>
