@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PPaxe</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
+</head>
+<body onload="myFunction()" style="margin:0;">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav navbar-buttons">
+          <li class="active-navbar"><a href="{{ url_for('home_form') }}">HOME</a></li>
+          <li><a href="{{ url_for('tutorial') }}">TUTORIAL</a></li>
+          <li><a href="{{ url_for('download') }}">DOWNLOAD</a></li>
+          <li><a href="{{ url_for('about') }}">ABOUT</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="https://compgen.bio.ub.edu">
+              <img class="compgen-logo" src="{{ url_for('static', filename='compgen-logo.png') }}"/>
+              CompGen
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div id="loader"></div>
+    <div id="content-form" style="display:none;" class="content animate-bottom">
+      <a href="/">
+        <img class="logo" src="{{ url_for('static', filename='logo.png') }}"/>
+      </a>
+      
+      <div class="row equal">
+          <!-- MAIN FORM -->
+          <div class="panel noborder panel-warning col-sm-6">
+            <div class="panel-heading">Retrieve interactions from articles</div>
+            <div class="panel-body">
+              <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
+              <div id="identifiers-num"><span id="identifiers-num-span" class="num-cool">0</span> identifiers</div>
+              <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post">
+              <div class="form-group">
+                <label for="identifiers">Pubmed identifiers:</label>
+                <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
+              </div>
+              <div class="funkyradio">
+                <a class="info-tooltip" title="
+                    Look for Interactions in <b>ABSTRACTS</b>.
+                ">
+                    <div class="funkyradio-warning">
+                      <input type="radio" name="database" value="PUBMED" id="db-pubmed" checked/>
+                      <label for="db-pubmed">PubMed</label>
+                  </div>
+                </a>
+                <a class="info-tooltip" title="
+                  Look for Interactions in the <b>FULL TEXT</b> (only if available at PMC).
+                ">
+                  <div class="funkyradio-warning">
+                      <input type="radio" name="database" value="PMC"id="db-pmc"/>
+                      <label for="db-pmc">PMC</label>
+                  </div>
+                    <input type="hidden" name="email" value="" id="email-input"/>
+                </div>
+                </a><!--
+                    <label class="radio">
+                      <input type="radio" name="database" value="PUBMED" checked>PubMed
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="database" value="PMC">PMC
+                    </label>
+                  -->
+                <br>
+              <button type="submit" class="btn btn-default submit">SUBMIT</button>
+            </form>
+            </div>
+          </div>
+
+        <!-- Quick Help-->
+          <div class="panel noborder panel-info col-sm-6">
+            <div class="panel-heading">Quick Help</div>
+            <div id="quick-help-body" class="panel-body">
+              <p>
+                Look for <b>protein-protein interactions</b> (or genetic interactions) in the scientific literature.
+              </p>
+              <p>
+                Write PubMed identifiers separated by commas (or one in each line),
+                select if you want to parse the abstracts (PubMed) or the whole text when available (PMC), and click <b>SUBMIT</b>.
+              </p>
+
+                e.g.:
+                <ul>
+                  <li>25211495, 25196150, 15640847, 20729546</li>
+                </ul>
+                <hr>
+              <p>
+                For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="{{ url_for('tutorial') }}">tutorial</a>.
+                To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="/about">about</a> section.
+              </p>
+            </div>
+          </div>
+
+    </div> <!--bipanel-->
+
+      <!-- Too many pubmed ids -->
+      <div id="dialog-form" title="Send results to mail">
+        <p class="validateTips">This may take some time, do you want us to send your results by e-mail?</p>
+
+        <form>
+          <fieldset>
+            <label for="email">Email</label>
+            <input type="text" name="email" id="email" value="yourmail@something.com" class="text ui-widget-content ui-corner-all">
+            <!-- Allow form submission with keyboard without duplicating the dialog button -->
+            <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+          </fieldset>
+        </form>
+      </div>
+    </div> <!--content-->
+
+
+    <div id="query-form" title="Query PubMed">
+      <p class="text-pixel">Write PubMed Query to get the articles here:</p>
+      <form id="pmqueryform">
+        <textarea class="form-control" rows="2" name="pmquery" id="pmquery"></textarea>
+      </form>
+      <div id="pmqueryloading"><div id="loader-small"></div> <p class="text-pixel">Querying Pubmed...</p></div>
+      <div id="pmqueryerror"> <span class="glyphicon glyphicon-remove"> </span> <p class="text-pixel">PubMed Query Error </p></div>
+
+    </div>
+
+     {% if response['server-error'] %}
+       <div id="server-error">
+            <h3>Internal Server Error</h3>
+            <hr>
+            Something went wrong, try again later.<br>
+            {% if response['debug'] %}
+              <div id="server-error-code">
+                {{ response['server-error'] }}
+              </div>
+            {% endif %}
+        </div>
+      {% endif %}
+
+    <div style="display:none;" id="results-div" class="content results animate-bottom">
+      <!-- Results -->
+      <div id="results-div-sub" class="results">
+        <a href="#0" class="cd-top" title="Back to Top">Top</a>
+        {% block body %}
+          {% if response['error'] %}
+            <h3>Invalid PubMed identifiers</h3>
+          {% else %}
+            {% if response['search'] %}
+            <!-- A search -->
+              <h1>Results</h1>
+              <hr>
+                {% if response['server-error'] %} 
+                  
+                {% elif response['nprots'] > 0 %}
+                  <!-- With protein results -->
+                  <!-- Download pdf report -->
+                  <a download=ppaxe-report.pdf href="{{ response['pdf'] }}" title='Download pdf document'>
+                    <div class="download-pdf btn btn-default"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                      Download PDF</div>
+                  </a>
+                  <br><br>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <!-- Summary table -->
+                      {{ response['sum_table']|safe }}
+                    </div>
+                    <div class="col-sm-6">
+                      <table class="summarytable">
+                        <tr>
+                          <td>{{response['source']}}s from</td>
+                          <td>{{ response['database'] }}</td>
+                        </tr>
+                        <tr>
+                          <td>Download time</td>
+                          <td>{{ response['time_download'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>CoreNLP time</td>
+                          <td>{{ response['time_corenlp'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>Analysis time</td>
+                          <td>{{ response['time_analysis'] }} seconds</td>
+                        </tr>
+                        <tr>
+                          <td>Report time</td>
+                          <td>{{ response['time_report'] }} seconds</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+
+                  {% if response['nints'] > 0 %}
+                  <!-- With interactions -->
+                    <br>
+                    <h3>Interactions</h3>
+                    <hr>
+                    {{ response['int_table']|safe }}
+                    <div class="download-table int-table-btn btn btn-default">Download table</div>
+                    <br>
+                  {% endif %}
+
+                  <!-- Protein table -->
+                  <br>
+                  <h3>Proteins</h3>
+                  <hr>
+                  {{ response['prot_table']|safe }}
+                  <div class="download-table prot-table-btn btn btn-default">Download table</div>
+                  <br>
+                  {% if response['nints'] > 0 %}
+                  <!-- Graph -->
+                    <br>
+                    <h3>Graph</h3>
+                    <hr>
+                    <div id="cyt"> </div>
+                    <div class="btn btn-default" id="centergraph">
+                      <span class="glyphicon glyphicon-fullscreen"></span>
+                      Center
+                    </div>
+
+                  <!-- Plots -->
+                    <br><br>
+                    <h3>Plots</h3>
+                    <hr>
+                    <div class="plots">
+                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
+                      <br><hr>
+                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
+                      <br><hr>
+                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
+                      <br><hr>
+                    </div>
+                  {% endif %}
+
+                  {% else %}
+                    No results
+                  {% endif %} <!-- nprots > 0 -->
+                
+
+              {% endif %} <!-- nprots != None -->
+
+              {% endif %} <!-- error -->
+        {% endblock %}
+      </div>
+    </div> <!--content-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='cytoscape_template.js') }}"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="{{ url_for('static', filename='back-to-top.js') }}"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $(document).ready(function(){
+    intTable = $('#inttable').DataTable({
+      "order": [[ 0, "desc" ]],
+      responsive: true
+    });
+    protTable = $('#prottable').DataTable({
+      "order": [[ 1, "desc" ]],
+      responsive: true
+    });
+  });
+</script>
+<script src="{{ url_for('static', filename='download-table.js') }}"></script>
+
+<script>
+
+$(document).ready(function(){
+
+  updateIdCount = function(num) {
+    $('#identifiers-num-span').removeClass('num-cool');
+    $('#identifiers-num-span').removeClass('num-warning');
+    $('#identifiers-num-span').removeClass('num-danger');
+    if (num < 30) {$('#identifiers-num-span').addClass('num-cool')}
+    else if (num >=30 && num < 100) {$('#identifiers-num-span').addClass('num-warning')}
+    else {$('#identifiers-num-span').addClass('num-danger')};
+    $('#identifiers-num-span').html(num);
+  }
+
+  var ppaxeform;
+
+  // open dialog to confirm/email
+  $( "#dialog-form" ).dialog({
+    autoOpen: false,
+    height: 400,
+    width: 350,
+    modal: true,
+    buttons: {
+      "Send Mail": function() {
+        emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+        email = $( "#email" );
+        $(this).dialog( "close" );
+        $("#email-input").val(email.val());
+        ppaxeform.submit();
+        document.getElementById("loader").style.display = "inline";
+        $("#content-form").css('display', 'none');
+      },
+      "Don't send mail": function() {
+        $(this).dialog( "close" );
+        ppaxeform.submit();
+        document.getElementById("loader").style.display = "inline";
+        $("#content-form").css('display', 'none');
+      }
+    },
+    close: function() {
+      $(this).dialog( "close" );
+      document.getElementById("loader").style.display = "none";
+      $("#content-form").css('display', 'inline-block');
+      //ppaxeform.submit();
+    }
+  });
+
+  $("#query-form").dialog({
+    autoOpen: false,
+    height: 400,
+    width: 350,
+    modal: true,
+    buttons: {
+      "Query PubMed": {
+        class: 'btn btn-info',
+        text: 'Query PubMed',
+        click: function() {
+          // Query Pubmed Here
+          console.log("Querying...");
+          var queryInput = $("#pmquery").val();
+          $("#pmqueryloading").show();
+          $.ajax({
+            type: "GET",
+            url: "{{ url_for('querypubmed') }}",
+            cache: true,
+            data: {
+              'query': queryInput
+            },
+            success : function(data) {
+              if (data.error) {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              } else {
+                $("#identifiers").val(data.identifiers.join(","));
+                updateIdCount(data.identifiers.length);
+                $("#query-form").dialog("close");
+                $("#pmqueryloading").hide()
+              }
+            },
+            statusCode: {
+              404: function () {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              },
+              400: function () {
+                $("#pmqueryerror").show();
+                $("#pmqueryloading").hide()
+              },
+            },
+            error : function() {
+              $("#pmqueryerror").show();
+              $("#pmqueryloading").hide()
+            },
+          });
+
+        },
+      },
+      "Cancel": {
+        text: "Cancel",
+        class: "btn",
+        click: function() {
+          $("#pmqueryloading").hide()
+          $(this).dialog( "close" );
+        },
+      },
+    }
+  });
+
+  $("#query-form-btn").on("click", function(){
+    $("#query-form").dialog( "open" );
+  });
+
+
+
+  $('#identifiers').on('input', function() {
+    // Count PubMed identifiers
+    var re = /,|\n|\r/;
+    var idents = $('#identifiers').val().split(re);
+    idents = $.grep(idents, function(elem) {
+      return elem
+    });
+    var num = idents.length;
+    updateIdCount(num);
+  });
+
+  $('#ppaxeform').submit(function() {
+    ppaxeform = this;
+    maxpubmed  = 30; // Max number of articles for PubMed before dialog appears
+    maxpmc     = 10; // Max number of articles for PubMed before dialog appears
+    maxallowed = 0;
+    numidents = $("#identifiers").val().split(/[\n\r,]/);
+    numidents = numidents.length;
+    document.getElementById("loader").style.display = "inline";
+    $(".content").css('display', 'none');
+
+    if ($("input[name=database]:checked").val() == "PUBMED") {
+      maxallowed = maxpubmed;
+    } else {
+      maxallowed = maxpmc;
+    }
+    if (numidents >= maxallowed) {
+      $( "#dialog-form" ).dialog( "open" );
+      return false;
+    } else {
+      ppaxeform.submit();
+    }
+  });
+});
+
+</script>
+
+{% if response['graph'] %}
+  <script>
+   
+  </script>
+{% endif %}
+
+<script>
+  var myVar;
+  function myFunction() {
+      myVar = setTimeout(showPage, 0.001);
+  }
+
+  function showPage() {
+    document.getElementById("loader").style.display = "none";
+    $(".content").css('display', 'inline-block');
+    $('html, body').animate({
+        scrollTop: $("#results-div").offset().top
+    }, 2000);
+    {% if 'nprots' not in response  %}
+      $(".results").css('display', 'none');
+    {% endif %}
+    {% if response['graph'] %}
+      $(document).ready(function() {
+       var stylesheet = cytoscape.stylesheet()
+         .selector('node')
+             .css({
+                 'content': 'data(name)',
+                 'text-valign': 'bottom',
+                 'color': '#656565',
+                 'background-color': "#FFB600",
+                 'font-size': 10,
+                 'text-halign': 'center',
+                 'text-background-color': '#F8F8F8',
+                 'text-background-opacity': 1,
+                 'text-background-shape': 'roundrectangle',
+             })
+         .selector('edge')
+             .css({
+                 'content': 'data(confidence)',
+                 'text-background-color': '#F8F8F8',
+                 'text-background-opacity': 1,
+                 'text-background-shape': 'roundrectangle',
+                 'target-arrow-shape': 'triangle',
+                 'width': 2,
+                 'line-color': '#888888',
+                 'font-size': 8,
+                 'target-arrow-color': '#888888'
+             });
+  
+         // Cytoscape variable definition
+         console.log("Initializing graph");
+         var cy = cytoscape({
+             style: stylesheet,
+             layout: { name: 'cose' },
+             container: document.getElementById('cyt'),
+             elements: {{ response['graph']|safe }},
+             ready: function() { window.cy = this; }
+           });
+         $("#centergraph").on("click", function() {
+           window.cy.layout({name:'cose'});
+           window.cy.fit();
+       })
+    });
+    {% endif %}
+  }
+</script>
+
+<script>
+    $( function() {
+        $( ".info-tooltip" ).tooltip({
+            track: true,
+            content: function(){
+                return $(this).attr("title");
+            }
+        });
+    } );
+</script>
+
+
+
+
+</body>
+</html>

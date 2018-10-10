@@ -601,3 +601,26 @@ table {
   }
 }
 /* END OF BACK TO TOP */
+
+.progress-done { 
+  display: none;
+  background-color: #28A745;
+  color: white;
+  text-align: center;
+}
+
+.progress-row {
+  max-width: 400px;
+  margin-top: 15px;
+
+}
+
+
+.job-id {
+  background-color: #FCF8E3; 
+  padding: 3px;
+}
+
+blockquote {
+  font-size: 12px;
+}

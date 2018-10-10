@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block results %}
+	<div id="results-div" class="content results animate-bottom">
+      <!-- Results -->
+      <div id="results-div-sub" class="results">
+        <a href="#0" class="cd-top" title="Back to Top">Top</a>
+          {% if response['error'] %}
+            <h3>Invalid PubMed identifiers</h3>
+          {% else %}
+            {% if response['search'] %}
+            <!-- A search -->
+              <h1>Results for job: <span class="job-id">{{ response['job_id'] }}</span></h1>
+              <hr>
+                {% if response['server-error'] %} 
+                  
+                {% elif response['nprots'] > 0 %}
+                  <!-- With protein results -->
+                  <!-- Download pdf report -->
+                  <a download=ppaxe-report.pdf href="{{ response['pdf'] }}" title='Download pdf document'>
+                    <div class="download-pdf btn btn-default"><i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                      Download PDF</div>
+                  </a>
+                  <br><br>
+
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <!-- Summary table -->
+                      {{ response['sum_table']|safe }}
+                    </div>
+                    <div class="col-sm-6">
+                      <table class="summarytable">
+                        <tr>
+                          <td>{{response['source']}} from</td>
+                          <td>{{ response['database'] }}</td>
+                        </tr>
+                        <tr>
+                          <td>Job started:</td>
+                          <td>{{ response['start_time'] }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+
+                  {% if response['nints'] > 0 %}
+                  <!-- With interactions -->
+                    <br>
+                    <h3>Interactions</h3>
+                    <hr>
+                    {{ response['int_table']|safe }}
+                    <div class="download-table int-table-btn btn btn-default">Download table</div>
+                    <br>
+                  {% endif %}
+
+                  <!-- Protein table -->
+                  <br>
+                  <h3>Proteins</h3>
+                  <hr>
+                  {{ response['prot_table']|safe }}
+                  <div class="download-table prot-table-btn btn btn-default">Download table</div>
+                  <br>
+                  {% if response['nints'] > 0 %}
+                  <!-- Graph -->
+                    <br>
+                    <h3>Graph</h3>
+                    <hr>
+                    <div id="cyt"> </div>
+                    <div class="btn btn-default" id="centergraph">
+                      <span class="glyphicon glyphicon-fullscreen"></span>
+                      Center
+                    </div>
+
+                  <!-- Plots -->
+                    <br><br>
+                    <h3>Plots</h3>
+                    <hr>
+                    <div class="plots">
+                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
+                      <br><hr>
+                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
+                      <br><hr>
+                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
+                      <br><hr>
+                    </div>
+                  {% endif %}
+
+                  {% else %}
+                    No results
+                  {% endif %} <!-- nprots > 0 -->
+                
+
+              {% endif %} <!-- nprots != None -->
+
+              {% endif %} <!-- error -->
+
+      </div>
+    </div> <!--content-->
+{% endblock results %}
+
+
+{% block result_scripts %}
+<script>
+
+</script>
+{% endblock %}

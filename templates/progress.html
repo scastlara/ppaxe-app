@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block results %}
+	<div id="results-div" class="content results animate-bottom">
+      <!-- Results -->
+      <div id="results-div-sub" class="results">
+        <a href="#0" class="cd-top" title="Back to Top">Top</a>
+          {% if response['error'] %}
+            <h3>Invalid PubMed identifiers</h3>
+          {% else %}
+          	<h2>Progress for Job: <span class="job-id">{{ response['job_id'] }}</span></h2>
+          	<hr>
+          	<br>
+
+          	<blockquote>
+          		<p> 
+          			This page will be updated automatically once your results are ready, you may leave it at any time and check them again by following this link, bookmark it for accessing it later: <a href="https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}" target="_blank">https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}</a> . 
+
+          		</p>
+          		<p>
+          			The link will be sent by email (if requested) but keep the link in case the connection expires (<a href="https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}" target="_blank">https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}</a>). Please, remember that your results will only be kept for <b>one week</b>.
+          		</p>
+          	</blockquote>
+          	<hr>
+          	<br>
+
+          	<div class="progress-row row text-pixel">
+          		<div class="progress-title col-sm-8">Downloading articles</div>
+          		<div class="col-sm-4"><div class="progress-done" id="1">done</div></div>
+          	</div>
+          	<div class="progress-row row text-pixel">
+          		<div class="progress-title col-sm-8">Retrieving interactions</div>
+          		<div class="col-sm-4"><div class="progress-done" id="2">done</div></div>
+          	</div>
+          	<div class="progress-row row text-pixel">
+          		<div class="progress-title col-sm-8">Making summary</div>
+          		<div class="col-sm-4"><div class="progress-done" id="3">done</div></div>
+          	</div>
+          	<div class="progress-row row text-pixel">
+          		<div class="progress-title col-sm-8">Displaying results</div>
+          		<div class="col-sm-4"><div class="progress-done" id="4">done</span></div>
+          	</div>
+          	
+          
+
+          {% endif %} <!-- error -->
+
+      </div>
+{% endblock results %}
+
+
+{% block result_scripts %}
+<script>
+	var interval = 15000;  // 1000 = 1 second, 3000 = 3 seconds
+	function doAjax() {
+	    $.ajax({
+	            type: 'GET',
+	            url: '/progress/{{ response["job_id"] }}',
+	            success: function (data) {
+		            if (data == "1") {
+		                $("#1").show();
+		            } else if (data == "2") {
+		            	$("#1").show();
+		            	$("#2").show();
+		            } else if (data == "3") {
+		            	$("#1").show();
+		            	$("#2").show();
+		            	$("#3").show();
+		            } else if (data == "4") {
+		            	$("#1").show();
+		            	$("#2").show();
+		            	$("#3").show();
+		            	$("#4").show();
+		            	document.location.href = '/job/{{ response["job_id"] }}';
+		            }
+		        },
+	            complete: function (data) {
+	                // Schedule the next
+	                if (data != "4") {
+	                	setTimeout(doAjax, interval);
+	                }
+	            }
+	    });
+	}
+	setTimeout(doAjax, interval);
+</script>
+{% endblock %}
