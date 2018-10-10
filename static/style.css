@@ -624,3 +624,13 @@ table {
 blockquote {
   font-size: 12px;
 }
+
+.progress-container {
+  width: 90%;
+}
+
+.progress-loading {
+  text-align: center;
+  margin-left: 50%;
+  margin-bottom: 35px;
+}

@@ -29,6 +29,7 @@ import sqlite3
 import datetime
 import time
 import uuid
+from flask import jsonify
 
 
 class ReverseProxied(object):
@@ -146,6 +147,16 @@ def init_job(db, job):
     return start_time
 
 
+def get_end_time(db, job):
+    """
+    Returns end time of a given job
+    """
+    cursor = db.cursor()
+    cursor.execute("SELECT updated from jobs WHERE id = ?", (job,))
+    end_time = cursor.fetchone()
+    return end_time[0]
+
+
 def update_progress(db, job, progress):
     """
     Updates progress of job in database
@@ -157,14 +168,31 @@ def update_progress(db, job, progress):
     """, (progress, datetime.datetime.now(), job) )
     db.commit()
 
+
+def update_percentage(db, job, perc):
+    """
+    Updates percentage of articles already analyzed
+    """
+    db.execute("""
+        UPDATE jobs
+        SET percentage = ?
+        WHERE id = ?
+    """, (perc, job))
+    db.commit()
+
+
 def get_progress(db, job):
     """
     Returns progress for a job
     """
     cursor = db.cursor()
     cursor.execute("SELECT progress from jobs WHERE id = ?", (job,))
-    result = cursor.fetchone()
-    return result[0]
+    result = cursor.fetchone()[0]
+    percentage = 0
+    if result == 1:
+        cursor.execute("SELECT percentage from jobs WHERE id = ?", (job,))
+        percentage = int(cursor.fetchone()[0])
+    return (result, percentage)
 
 
 def create_response(summary, query):
@@ -231,10 +259,21 @@ class ExportingThread(threading.Thread):
         update_progress(db, self.job_id, 1)
 
         # Predict Interactions
+        total_articles = len(self.query.articles)
+        curr_articles = 0
+        percentage = 0
+        prev_articles = 0
         for article in self.query:
             article.extract_sentences(source=self.source)
             sentences = [ sentence.annotate() for sentence in article.sentences ]
             article.sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(delayed(parallel_predict_interactions)(sentence) for sentence in article.sentences)
+            curr_articles += 1
+            percentage = (float(curr_articles) / float(total_articles)) * 100
+            if int(curr_articles) - int(prev_articles) >= 5:
+                prev_articles = curr_articles
+                update_percentage(db, self.job_id, percentage)
+
+
         update_progress(db, self.job_id, 2)
         
         # Make Summary
@@ -265,7 +304,6 @@ def home_form():
         response['search'] = True
         template = "progress.html"
         job_id = int(str(int(time.time())) + str(random.randint(0, 100)))
-        print(job_id)
         response['job_id'] = job_id
         identifiers = request.form['identifiers']
         database = request.form['database']
@@ -290,8 +328,7 @@ def job(job_id):
     Allows users to check the progress of their job.
     '''
     db = connect_to_db()
-    progress = get_progress(db, job_id)
-    response = dict()
+    progress, percentage = get_progress(db, job_id)
     template = "progress.html"
     if progress < 4:
         # Not done yet
@@ -307,6 +344,7 @@ def job(job_id):
             response = pickle.load(p_fh)
         response['search'] = True
         response['job_id'] = job_id
+        response['end_time'] = get_end_time(db, job_id)
     return render_template(template, response=response)
 
 
@@ -320,8 +358,8 @@ def progress(job_id):
         4 : Results ready
     '''
     db = connect_to_db()
-    progress = get_progress(db, job_id)
-    return str(progress)
+    progress, percentage = get_progress(db, job_id)
+    return jsonify(progress=progress, percentage=percentage)
 
 
 @app.route('/querypubmed', methods=['GET'])

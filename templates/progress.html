@@ -22,15 +22,16 @@
           		</p>
           	</blockquote>
           	<hr>
-          	<br>
-
           	<div class="progress-row row text-pixel">
+          		<div class="col-sm-12 progress-loading">
+          			<div id="loader-small"></div>
+          		</div>
           		<div class="progress-title col-sm-8">Downloading articles</div>
           		<div class="col-sm-4"><div class="progress-done" id="1">done</div></div>
           	</div>
           	<div class="progress-row row text-pixel">
           		<div class="progress-title col-sm-8">Retrieving interactions</div>
-          		<div class="col-sm-4"><div class="progress-done" id="2">done</div></div>
+          		<div class="col-sm-4"><div id="percentage">0 %</div><div class="progress-done" id="2">done</div></div>
           	</div>
           	<div class="progress-row row text-pixel">
           		<div class="progress-title col-sm-8">Making summary</div>
@@ -40,6 +41,7 @@
           		<div class="progress-title col-sm-8">Displaying results</div>
           		<div class="col-sm-4"><div class="progress-done" id="4">done</span></div>
           	</div>
+		        	
           	
           
 
@@ -51,22 +53,28 @@
 
 {% block result_scripts %}
 <script>
-	var interval = 15000;  // 1000 = 1 second, 3000 = 3 seconds
+	var interval = 5000;  // 1000 = 1 second, 3000 = 3 seconds
 	function doAjax() {
 	    $.ajax({
 	            type: 'GET',
 	            url: '/progress/{{ response["job_id"] }}',
 	            success: function (data) {
-		            if (data == "1") {
+		            if (data.progress == 1) {
+		            	console.log(data.percentage)
 		                $("#1").show();
-		            } else if (data == "2") {
+		                $("#percentage").html(data.percentage + " %");
+		                $("#percentage").show()
+		            } else if (data.progress == 2) {
+		            	$("#percentage").hide();
 		            	$("#1").show();
 		            	$("#2").show();
-		            } else if (data == "3") {
+		            } else if (data.progress == 3) {
+		            	$("#percentage").hide();
 		            	$("#1").show();
 		            	$("#2").show();
 		            	$("#3").show();
-		            } else if (data == "4") {
+		            } else if (data.progress == 4) {
+		            	$("#percentage").hide();
 		            	$("#1").show();
 		            	$("#2").show();
 		            	$("#3").show();
@@ -76,7 +84,7 @@
 		        },
 	            complete: function (data) {
 	                // Schedule the next
-	                if (data != "4") {
+	                if (data.progress != 4) {
 	                	setTimeout(doAjax, interval);
 	                }
 	            }
