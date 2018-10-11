@@ -19,7 +19,6 @@ from pycorenlp import StanfordCoreNLP
 from flask import jsonify
 import requests
 from xml.dom import minidom
-from joblib import Parallel, delayed
 from timeit import default_timer as timer
 from StringIO import StringIO
 import threading
@@ -29,7 +28,6 @@ import sqlite3
 import datetime
 import time
 import uuid
-from flask import jsonify
 
 
 class ReverseProxied(object):
@@ -105,7 +103,6 @@ def connect_to_db():
     db = sqlite3.connect('mydb')
     return db
 
-# -----------------
 def send_mail(send_from, send_to, subject, attachment=None):
     '''
     Returns message to be sent to ppaxe user
@@ -122,16 +119,6 @@ def send_mail(send_from, send_to, subject, attachment=None):
     part.add_header('Content-Disposition', 'attachment; filename="ppaxe-report.pdf"')
     msg.attach(part)
     return msg
-
-
-def parallel_predict_interactions(sentence):
-    '''
-    Parallelizes the prediction of interactions
-    '''
-    sentence.get_candidates()
-    for candidate in sentence.candidates:
-        candidate.predict()
-    return sentence
 
 
 def init_job(db, job):
@@ -246,14 +233,6 @@ class ExportingThread(threading.Thread):
         self.source = source
 
     def run(self):
-        # WHAT TO DO:
-        #   - Save to database only the Job data (job identifier, job date)
-        #   - Save pickle with query object.
-        #   - When requesting the /job?id=XXX query database, if it is marked as "done", 
-        #     unpickle the query and do the summary.
-        #   - Instead of pickling the Query, we can make the summary, create the "response"
-        #     dictionary and then pickling that, saving a lot of space.
-        # Initialize Job
         db = connect_to_db()
         start_time = init_job(db, self.job_id)
 
@@ -267,16 +246,13 @@ class ExportingThread(threading.Thread):
         percentage = 0
         prev_articles = 0
         for article in self.query:
-            article.extract_sentences(source=self.source)
-            sentences = [ sentence.annotate() for sentence in article.sentences ]
-            article.sentences = Parallel(n_jobs=NJOBS, backend="loky", verbose=int(os.environ.get('PPAXE_DEBUG', 0)))(delayed(parallel_predict_interactions)(sentence) for sentence in article.sentences)
+            article.predict_interactions(self.source)
+
             curr_articles += 1
             percentage = (float(curr_articles) / float(total_articles)) * 100
             if int(curr_articles) - int(prev_articles) >= 5:
                 prev_articles = curr_articles
                 update_percentage(db, self.job_id, percentage)
-
-
         update_progress(db, self.job_id, 2)
         
         # Make Summary
