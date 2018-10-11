@@ -191,7 +191,10 @@ def get_progress(db, job):
     percentage = 0
     if result == 1:
         cursor.execute("SELECT percentage from jobs WHERE id = ?", (job,))
-        percentage = int(cursor.fetchone()[0])
+        try:
+            percentage = int(cursor.fetchone()[0])
+        except:
+            percentage = 0
     return (result, percentage)
 
 
