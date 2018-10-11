@@ -100,7 +100,7 @@ def connect_to_db():
     '''
     Returns connection to db
     '''
-    db = sqlite3.connect('mydb')
+    db = sqlite3.connect('ppaxe.sqlite')
     return db
 
 def send_mail(send_from, send_to, subject, attachment=None):
