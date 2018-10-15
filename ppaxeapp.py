@@ -226,19 +226,23 @@ def create_response(summary, query):
 # THREADING
 # -----------------------------------------------------------------------
 class ExportingThread(threading.Thread):
-    def __init__(self, job_id, query, source):
+    def __init__(self, job_id, query, source, plain=False):
         super(ExportingThread, self).__init__()
         self.job_id = job_id
         self.query = query
         self.source = source
+        self.plain = plain
 
     def run(self):
         db = connect_to_db()
         start_time = init_job(db, self.job_id)
 
         # Get Articles
-        self.query.get_articles()
-        update_progress(db, self.job_id, 1)
+        if self.plain is False:
+            self.query.get_articles()
+            update_progress(db, self.job_id, 1)
+        else:
+            update_progress(db, self.job_id, 1)
 
         # Predict Interactions
         total_articles = len(self.query.articles)
@@ -247,7 +251,6 @@ class ExportingThread(threading.Thread):
         prev_articles = 0
         for article in self.query:
             article.predict_interactions(self.source)
-
             curr_articles += 1
             percentage = (float(curr_articles) / float(total_articles)) * 100
             if int(curr_articles) - int(prev_articles) >= 5:
@@ -256,7 +259,10 @@ class ExportingThread(threading.Thread):
         update_progress(db, self.job_id, 2)
         
         # Make Summary
-        summary = report.ReportSummary(self.query)
+        if self.plain is True:
+            summary = report.ReportSummary(self.query.articles)
+        else:
+            summary = report.ReportSummary(self.query)
         summary.graphsummary.makesummary()
         summary.protsummary.makesummary()
         update_progress(db, self.job_id, 3)
@@ -279,7 +285,18 @@ def home_form():
     response    = dict()
     response['search'] = False
     template = "base.html"
-    if 'identifiers' in request.form:
+    if 'file' in request.files:
+        database = "PLAIN-TEXT"
+        template = "progress.html"
+        fcontent = request.files['file'].read()
+        job_id = int(str(int(time.time())) + str(random.randint(0, 100)))
+        response['job_id'] = job_id
+        query = core.PMQuery(ids=[], database=database)
+        article = core.Article(pmid="NA", fulltext=fcontent, journal="NA", year=1)
+        query.articles = [article]
+        thread = ExportingThread(job_id, query, "fulltext", plain=True)
+        thread.start()
+    elif 'identifiers' in request.form:
         response['search'] = True
         template = "progress.html"
         job_id = int(str(int(time.time())) + str(random.randint(0, 100)))

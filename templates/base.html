@@ -44,11 +44,17 @@
             <div class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
               <div id="identifiers-num"><span id="identifiers-num-span" class="num-cool">0</span> identifiers</div>
-              <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post">
+              <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post" enctype="multipart/form-data">
 	              <div class="form-group">
 	                <label for="identifiers">Pubmed identifiers:</label>
 	                <textarea class="form-control" rows="5" name="identifiers" id="identifiers"></textarea>
 	              </div>
+                <br>
+                <div class="form-group">
+                  <label for="file">Select plain-text file:</label>
+                  <input id="file" type="file" name="file">
+                </div>
+                <hr>
 	              <div class="funkyradio">
 	                <a class="info-tooltip" title="
 	                    Look for Interactions in <b>ABSTRACTS</b>.
