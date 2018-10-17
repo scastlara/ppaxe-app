@@ -73,18 +73,38 @@
                       <span class="glyphicon glyphicon-fullscreen"></span>
                       Center
                     </div>
+                    <select name="layout" class="layout-dropdown form-control" id="layout">
+                      <option value="" disabled selected>Layout</option>
+                      <option class="layout-option">Cose</option>
+                      <option class="layout-option">Grid</option>
+                      <option class="layout-option">Circle</option>
+                      <option class="layout-option">Random</option>
+                    </select>
+                    <div class="download-table int-table-btn btn btn-default">
+                      <span class="glyphicon glyphicon-share"></span>
+                      Export table
+                    </div>
+                    <div class="btn btn-default" id="export-img">
+                      <span class="glyphicon glyphicon-picture"></span>
+                      Export png
+                    </div>
+
 
                   <!-- Plots -->
                     <br><br>
                     <h3>Plots</h3>
                     <hr>
                     <div class="plots">
-                      <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
-                      <br><hr>
-                      <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
-                      <br><hr>
-                      <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
-                      <br><hr>
+                      {% if 'plots' in response %}
+                        <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
+                        <br><hr>
+                        <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
+                        <br><hr>
+                        <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
+                        <br><hr>
+                      {% else %}
+                        <p>Plots not available for only one article.</p>
+                      {% endif %}
                     </div>
                   {% endif %}
 
@@ -104,6 +124,48 @@
 
 {% block result_scripts %}
 <script>
+
+$("#layout").change(function(){
+  var layoutName = $(this).val().toLowerCase();;
+  var layout = cy.layout({ name: layoutName });
+  layout.run();
+});
+</script>
+
+<script src="{{ url_for('static', filename='fileSaver.js') }}"></script>
+
+<script>
+/* SAVE BLOB */
+function b64ToBlob(b64Data, contentType, sliceSize) {
+  contentType = contentType || '';
+  sliceSize = sliceSize || 512;
+
+  var byteCharacters = atob(b64Data);
+  var byteArrays = [];
+
+  for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+    var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+    var byteNumbers = new Array(slice.length);
+    for (var i = 0; i < slice.length; i++) {
+      byteNumbers[i] = slice.charCodeAt(i);
+    }
+
+    var byteArray = new Uint8Array(byteNumbers);
+
+    byteArrays.push(byteArray);
+  }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
+$("#export-img").on("click", function(){
+  var b64key = 'base64,';
+  var b64 = cy.png().substring( cy.png().indexOf(b64key) + b64key.length );
+  var imgBlob = b64ToBlob( b64, 'image/png' );
+  saveAs( imgBlob, 'graph.png' );
+});
 
 </script>
 {% endblock %}

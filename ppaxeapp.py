@@ -185,14 +185,14 @@ def get_progress(db, job):
     return (result, percentage)
 
 
-def create_response(summary, query):
+def create_response(job_id, summary, query):
     """
     Creates response object out of the summary.
     """
     response = dict()
+    response['job_id'] = job_id
     response['nints']  = summary.graphsummary.numinteractions
     response['nprots'] = summary.protsummary.totalprots
-
     if response['nprots'] > 0:
         response['prot_table'] = summary.protsummary.table_to_html()
     else:
@@ -210,11 +210,13 @@ def create_response(summary, query):
         # JSON graph
         response['graph'] = summary.graphsummary.graph_to_json()
         # Plots
-        response['plots'] = dict()
-        response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
-        response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
-        response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
-        response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
+        if len(query.articles) > 1:
+            response['plots'] = dict()
+            response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
+            response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
+            response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
+            response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
+            response['plots']['network_plot'] = summary.graphsummary.make_networkx_plot().getvalue().encode("base64").strip()
         response['today'] = datetime.date.today()
         response['database'] = query.database
         with app.app_context():
@@ -226,12 +228,13 @@ def create_response(summary, query):
 # THREADING
 # -----------------------------------------------------------------------
 class ExportingThread(threading.Thread):
-    def __init__(self, job_id, query, source, plain=False):
+    def __init__(self, job_id, query, source, plain=False, email=None):
         super(ExportingThread, self).__init__()
         self.job_id = job_id
         self.query = query
         self.source = source
         self.plain = plain
+        self.email = email
 
     def run(self):
         db = connect_to_db()
@@ -268,13 +271,23 @@ class ExportingThread(threading.Thread):
         update_progress(db, self.job_id, 3)
 
         # Create response object
-        response = create_response(summary, self.query)
+        response = create_response(self.job_id, summary, self.query)
         response['start_time'] = start_time
         pickle_file = "tmp/%s_results.pkl" % self.job_id
         with open(pickle_file, 'wb') as p_fh:
             pickle.dump(response, p_fh)   
         update_progress(db, self.job_id, 4)
-
+        if self.email is not None:
+            try:
+                print(os.environ.get('PPAXE_EUSER', "dummy"))
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
+                msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), self.email, 'PPaxe results', response['pdf-plain'])
+                server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), self.email, msg.as_string())
+            except Exception as err:
+                print(err)
+                pass
 
 # VIEWS
 # -----------------------------------------------------------------------
@@ -288,15 +301,17 @@ def home_form():
     if 'file' in request.files:
         database = "PLAIN-TEXT"
         template = "progress.html"
+        email = request.form['email']
         fcontent = request.files['file'].read()
         job_id = int(str(int(time.time())) + str(random.randint(0, 100)))
         response['job_id'] = job_id
         query = core.PMQuery(ids=[], database=database)
         article = core.Article(pmid="NA", fulltext=fcontent, journal="NA", year=1)
         query.articles = [article]
-        thread = ExportingThread(job_id, query, "fulltext", plain=True)
+        thread = ExportingThread(job_id, query, "fulltext", plain=True, email=email)
         thread.start()
     elif 'identifiers' in request.form:
+        email = request.form['email']
         response['search'] = True
         template = "progress.html"
         job_id = int(str(int(time.time())) + str(random.randint(0, 100)))
@@ -310,7 +325,7 @@ def home_form():
         else:
             source = "fulltext"
         query = core.PMQuery(ids=identifiers, database=database)
-        thread = ExportingThread(job_id, query, source)
+        thread = ExportingThread(job_id, query, source, email=email)
         thread.start()
         # render progress template
         # which will do a jquery async query to /progess?job=XXXXX
@@ -326,6 +341,7 @@ def job(job_id):
     db = connect_to_db()
     progress, percentage = get_progress(db, job_id)
     template = "progress.html"
+    response = dict()
     if progress < 4:
         # Not done yet
         # Redirect to progress page

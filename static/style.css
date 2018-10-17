@@ -100,6 +100,18 @@
 
 }
 
+
+#layout {
+  display: inline-block;
+  font-family: FreePixel !important;
+  width: 144px;
+  font-size: 18px;
+}
+
+.layout-option {
+  font-family: FreePixel !important;
+}
+
 .download-btn {
   display: inline-block;
   cursor: pointer;
@@ -184,6 +196,7 @@ a.info-tooltip {
 .panel-body {
   font-family: FreePixel !important;
   font-weight: normal !important;
+  font-size: 16px;
 }
 
 .btn {
@@ -193,7 +206,7 @@ a.info-tooltip {
 
 .logo {
   display: inline-block;
-  width: 200px;
+  width: 300px;
   margin-bottom: 5%;
 }
 
@@ -232,6 +245,7 @@ a.info-tooltip {
 body {
   min-height: 100%;
   background-color: #EAEAEA;
+  font-size: 16px;
 }
 
 html {
@@ -601,6 +615,15 @@ table {
   }
 }
 /* END OF BACK TO TOP */
+
+
+@media only screen and (max-width: 600px) {
+  .content { 
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
 
 .progress-done { 
   display: none;

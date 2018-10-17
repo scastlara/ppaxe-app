@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel='shortcut icon' type='image/x-icon' href='{{ url_for('static', filename='favicon.ico') }}' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
   </head>
   <body onload="myFunction()" style="margin:0;">
       <nav class="navbar navbar-default">
@@ -48,6 +49,10 @@
           Alternatively, users can also specify a PubMed query by clicking on the "INPUT PUBMED QUERY" buton and writing the query on the textbox. The PubMed identifiers will be written automatically on the PPaxe form.
         </p>
 
+        <p class="text-pixel">
+          Finally, users can also upload a plain-text file from which PPaxe will retrieve the interactions.
+        </p>
+
 
         <a target="_blank" href="{{ url_for('static', filename='tut1.png') }}">
           <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut1.png') }}">
@@ -61,8 +66,25 @@
           <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut2.png') }}">
         </a>
 
-        
-      
+        <span class="tutorial-subtitle">Performing the Analysis</span>
+        <p class="text-pixel">
+          Once the job has been submitted to PPaxe, the application will provide the user a Job identifier. PPaxe will perform the requested analysis, informing the user of the progress. At this point, the browser window can be closed at any moment, as long as the user saves the job identifier. In order to check the progress (or see the results of the analysis if it is finished), users can go to <a href="https://compgen.bio.ub.edu/PPaxe/job/job-identifier" target="_blank">https://compgen.bio.ub.edu/PPaxe/job/job-identifier</a>. Please, not that results will only be saved for one week before being erased.
+        </p>
+
+        <a target="_blank" href="{{ url_for('static', filename='tut-job.png') }}">
+          <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut-job.png') }}">
+        </a>
+
+        <span class="tutorial-subtitle">Search by Organism</span>
+        <p class="text-pixel">
+          As of right now, PPaxe does not have a built-in species recognizer, that is, PPaxe can't decide from which organism a retrieved interaction is. 
+        </p>
+        <p class="text-pixel">
+          However, when performing PubMed queries, one can restrict the result to those articles with a particular MeSH term (which could include one or more organisms). By doing this, researchers can limit the articles to analyze to only those that refer to a particular species. 
+        </p>
+        <p class="text-pixel">
+          One PubMed query that could be performed is: <it>CERKL AND Humans[Mesh]</it>. This query would search PubMed for the term "CERKL" in all the fields, but restricting the articles to only those with the MeSH term "Humans". To learn more about MeSH terms, please visit: <a href="https://www.nlm.nih.gov/mesh/" target="_blank">https://www.nlm.nih.gov/mesh/</a>.
+        </p>
         <hr>
 
         <!-- RESULTS -->
