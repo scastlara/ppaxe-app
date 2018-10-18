@@ -99,7 +99,7 @@
 
         <br>
         <p class="text-pixel">
-          <strong>The Interactions</strong> found on the requested articles will be displayed on the "Interactions" table. This table includes a confidence value (which ranges from 0.5 to 1), the names of the proteins/genes, the PubMed identifier of the article, the publication year, and the sentence from which the interaction was retrieved (with the proteins displayed in blue, and the verbs in red). The table can be downloaded by clicking on the 'Download table' button.
+          <strong>The Interactions</strong> found on the requested articles will be displayed on the "Interactions" table. This table includes a confidence value (which is the normalized percentage of votes of the classifier, ranging from 0 to 1), the names of the proteins/genes, the PubMed identifier of the article, the publication year, and the sentence from which the interaction was retrieved (with the proteins displayed in blue, and the verbs in red). The table can be downloaded by clicking on the 'Download table' button.
         </p>
         <a target="_blank" href="{{ url_for('static', filename='tut4.png') }}">
           <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut4.png') }}">
