@@ -295,7 +295,7 @@ class ExportingThread(threading.Thread):
         with open(pickle_file, 'wb') as p_fh:
             pickle.dump(response, p_fh)   
         update_progress(db, self.job_id, 4)
-        if self.email is not None:
+        if self.email:
             send_mail(response, self.email)
             
 

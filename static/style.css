@@ -207,7 +207,7 @@ a.info-tooltip {
 .logo {
   display: inline-block;
   width: 300px;
-  margin-bottom: 5%;
+  margin-bottom: 2.5%;
 }
 
 .logo:hover {
@@ -266,7 +266,7 @@ html {
 }
 
 #quick-help-body {
-  min-height: 375px;
+  min-height: 501.4px;
 }
 
 #loader-small {
@@ -372,10 +372,9 @@ table {
 .content {
     background-color: white;
     width: 70%;
-    margin-top: 2%;
     margin-left: 15%;
     margin-right: 15%;
-    padding: 5%;
+    padding: 2.5%;
     height: 100%;
     background-color: rgb(255, 255, 255);
     display: none;
