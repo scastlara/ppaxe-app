@@ -103,7 +103,7 @@ def connect_to_db():
     db = sqlite3.connect('ppaxe.sqlite')
     return db
 
-def send_mail(send_from, send_to, subject, attachment=None):
+def get_mail_msg(send_from, send_to, subject, attachment=None):
     '''
     Returns message to be sent to ppaxe user
     '''
@@ -119,6 +119,23 @@ def send_mail(send_from, send_to, subject, attachment=None):
     part.add_header('Content-Disposition', 'attachment; filename="ppaxe-report.pdf"')
     msg.attach(part)
     return msg
+
+def send_mail(response, email_to):
+    '''
+    Try to send email message with PPaxe results.
+    '''
+    try:
+        user = os.environ.get('PPAXE_EUSER', "dummy")
+        passw = os.environ.get('PPAXE_EPASSW', "ymmud")
+        mail = os.environ.get('PPAXE_EMAIL', "dummy@email.com")
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(user, passw)
+        msg = get_mail_msg(mail, email_to, 'PPaxe results for job %s' % response['job_id'], response['pdf-plain'])
+        server.sendmail(mail, email_to, msg.as_string())
+    except Exception as err:
+        print(err)
+
 
 
 def init_job(db, job):
@@ -273,21 +290,14 @@ class ExportingThread(threading.Thread):
         # Create response object
         response = create_response(self.job_id, summary, self.query)
         response['start_time'] = start_time
+        response['job_id'] = self.job_id
         pickle_file = "tmp/%s_results.pkl" % self.job_id
         with open(pickle_file, 'wb') as p_fh:
             pickle.dump(response, p_fh)   
         update_progress(db, self.job_id, 4)
         if self.email is not None:
-            try:
-                print(os.environ.get('PPAXE_EUSER', "dummy"))
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                server.login(os.environ.get('PPAXE_EUSER', "dummy"), os.environ.get('PPAXE_EPASSW', "ymmud"))
-                msg = send_mail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), self.email, 'PPaxe results', response['pdf-plain'])
-                server.sendmail(os.environ.get('PPAXE_EMAIL', "dummy@email.com"), self.email, msg.as_string())
-            except Exception as err:
-                print(err)
-                pass
+            send_mail(response, self.email)
+            
 
 # VIEWS
 # -----------------------------------------------------------------------
@@ -355,7 +365,6 @@ def job(job_id):
         with open(pickle_file, 'rb') as p_fh:
             response = pickle.load(p_fh)
         response['search'] = True
-        response['job_id'] = job_id
         response['end_time'] = get_end_time(db, job_id)
     return render_template(template, response=response)
 
