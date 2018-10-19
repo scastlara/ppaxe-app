@@ -30,6 +30,19 @@
         </div>
       </nav>
       <div id="loader"></div>
+      <div id="table-of-contents" class="panel panel-default">
+        <div class="panel-heading">
+          Table of Contents
+        </div>
+        <div class="panel-body">
+          <ol>
+            <li class="tutorial-li"><a href="#search-form">Search form</a></li>
+            <li class="tutorial-li"><a href="#analysis">Jobs</a></li>
+            <li class="tutorial-li"><a href="#organism">Organism</a></li>
+            <li class="tutorial-li"><a href="#results">Results</a></li>
+          </ol>
+        </div>
+      </div>
       <div class="content animate-bottom">
          <a href="#0" class="cd-top" title="Back to Top">Top</a>
         <div class="tutorial-title">PPaxe tutorial</div>
@@ -40,7 +53,7 @@
         </p>
 
         <!-- SEARCH FORM -->
-        <span class="tutorial-subtitle">Search Form</span>
+        <span id="search-form" class="tutorial-subtitle">Search Form</span>
         <p class="text-pixel">
           <strong>PPaxe</strong> takes a list of <strong>PubMed identifiers</strong> as an input, separated by commas or newline characters. Once the identifiers have been written, the user has to select either PubMed (to look for interactions in the Abstract of the articles) or PubMedCentral (to look for interactions in the full-text article when available on PubMedCentral). Please, note that all the identifiers have to be PubMed identifiers, whether the search is going to be performed on PubMed or PubMedCentral.
         </p>
@@ -66,7 +79,7 @@
           <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut2.png') }}">
         </a>
 
-        <span class="tutorial-subtitle">Performing the Analysis</span>
+        <span id="analysis" class="tutorial-subtitle">Performing the Analysis</span>
         <p class="text-pixel">
           Once the job has been submitted to PPaxe, the application will provide the user a Job identifier. PPaxe will perform the requested analysis, informing the user of the progress. At this point, the browser window can be closed at any moment, as long as the user saves the job identifier. In order to check the progress (or see the results of the analysis if it is finished), users can go to <a href="https://compgen.bio.ub.edu/PPaxe/job/job-identifier" target="_blank">https://compgen.bio.ub.edu/PPaxe/job/job-identifier</a>. Please, note that results will only be saved for one week before being erased.
         </p>
@@ -75,7 +88,7 @@
           <img class="tut-img" width="700px" src="{{ url_for('static', filename='tut-job.png') }}">
         </a>
 
-        <span class="tutorial-subtitle">Search by Organism</span>
+        <span id="organism" class="tutorial-subtitle">Search by Organism</span>
         <p class="text-pixel">
           As of right now, PPaxe does not have a built-in species recognizer, that is, PPaxe can't decide from which organism a retrieved interaction is. 
         </p>
@@ -88,7 +101,7 @@
         <hr>
 
         <!-- RESULTS -->
-        <span class="tutorial-subtitle">Results</span>
+        <span id="results" class="tutorial-subtitle">Results</span>
 
         <p class="text-pixel">
           Once the search has been performed, the results will be displayed at the bottom of the page. A small summary table and an option to download the report as a PDF will appear at the top of the results section.
