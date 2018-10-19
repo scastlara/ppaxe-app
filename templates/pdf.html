@@ -54,15 +54,10 @@
               <b>Date: </b> {{ response['today'] }}<br>
               <b>Database: </b> {{ response['database'] }}<br>
               <b>PubMed Identifiers: </b> <br>
-              <div class="small-table">
-                <ol>
-                {% for ident in identifiers %}
-                    <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/?term={{ ident }}">{{ ident }}</a></li>
-                {% endfor %}
-                </ol>
-              </div>
 
-              <pdf:nextpage />
+                {% for ident in identifiers %}
+                  <a href="https://www.ncbi.nlm.nih.gov/pubmed/?term={{ ident }}">{{ ident }}</a>{{ "," if not loop.last }}
+                {% endfor %}
               <h1>Results</h1>
               <hr>
                 {% if response['nprots'] > 0 %}

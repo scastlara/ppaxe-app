@@ -12,12 +12,12 @@
 }
 
 .tutorial-title {
-   font-family: FreePixel !important;
+   font-family: Courier New !important;
    font-size: 48px;
 }
 
 .text-pixel {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-size: 16px;
 }
 
@@ -46,7 +46,7 @@
   width: 70%;
   min-height: 300px;
   max-height: 800px;
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
 }
 
 #server-error #server-error-code {
@@ -66,6 +66,7 @@
   float: right;
   width: 130px;
   height: 20px;
+  font-size: 14px;
 }
 
 .num-warning {
@@ -86,7 +87,7 @@
 
 .tutorial-subtitle{
   display: inline-block;
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-size: 24px;
   background-color: #FCF8E3;
   color: #8a6d3b;
@@ -103,19 +104,19 @@
 
 #layout {
   display: inline-block;
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   width: 144px;
   font-size: 18px;
 }
 
 .layout-option {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
 }
 
 .download-btn {
   display: inline-block;
   cursor: pointer;
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-size: 18px;
   background-color: #FCF8E3;
   color: #8a6d3b !important;
@@ -138,7 +139,7 @@
  color: white;
 }
 .about {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
 }
 
 .evaltable {
@@ -154,7 +155,7 @@
 }
 
 .ui-tooltip {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
 }
 
 a.info-tooltip {
@@ -189,18 +190,18 @@ a.info-tooltip {
 }
 
 .panel-heading {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-weight: bold;
 }
 
 .panel-body {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-weight: normal !important;
   font-size: 16px;
 }
 
 .btn {
-  font-family: FreePixel !important;
+  font-family: Courier New !important;
   font-weight: bold !important;
 }
 
@@ -655,4 +656,9 @@ blockquote {
   text-align: center;
   margin-left: 50%;
   margin-bottom: 35px;
+}
+
+.progress-block {
+  font-size: 14px;
+  font-family: Courier New;
 }
