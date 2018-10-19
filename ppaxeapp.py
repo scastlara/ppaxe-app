@@ -313,7 +313,7 @@ def home_form():
         template = "progress.html"
         email = request.form['email']
         fcontent = request.files['file'].read()
-        job_id = int(str(int(time.time())) + str(random.randint(0, 100)))
+        job_id = int(str(int(time.time())) + str(random.randint(0, 1000)))
         response['job_id'] = job_id
         query = core.PMQuery(ids=[], database=database)
         article = core.Article(pmid="NA", fulltext=fcontent, journal="NA", year=1)
