@@ -158,7 +158,7 @@ def get_end_time(db, job):
     cursor = db.cursor()
     cursor.execute("SELECT updated from jobs WHERE id = ?", (job,))
     end_time = cursor.fetchone()
-    return end_time[0]
+    return str(end_time[0])[:-7]
 
 
 def update_progress(db, job, progress):
@@ -289,7 +289,7 @@ class ExportingThread(threading.Thread):
 
         # Create response object
         response = create_response(self.job_id, summary, self.query)
-        response['start_time'] = start_time
+        response['start_time'] = str(start_time)[:-7]
         response['job_id'] = self.job_id
         pickle_file = "tmp/%s_results.pkl" % self.job_id
         with open(pickle_file, 'wb') as p_fh:
