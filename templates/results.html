@@ -49,7 +49,7 @@
                   {% if response['nints'] > 0 %}
                   <!-- With interactions -->
                     <br>
-                    <h3>Interactions</h3>
+                    <h3>Retrieved Interactions</h3>
                     <hr>
                     {{ response['int_table']|safe }}
                     <div class="download-table int-table-btn btn btn-default">Download table</div>
@@ -58,7 +58,7 @@
 
                   <!-- Protein table -->
                   <br>
-                  <h3>Proteins</h3>
+                  <h3>Proteins Found</h3>
                   <hr>
                   {{ response['prot_table']|safe }}
                   <div class="download-table prot-table-btn btn btn-default">Download table</div>
@@ -66,7 +66,7 @@
                   {% if response['nints'] > 0 %}
                   <!-- Graph -->
                     <br>
-                    <h3>Graph</h3>
+                    <h3>Reconstructed Interaction Network</h3>
                     <hr>
                     <div id="cyt"> </div>
                     <div class="btn btn-default" id="centergraph">
@@ -92,7 +92,7 @@
 
                   <!-- Plots -->
                     <br><br>
-                    <h3>Plots</h3>
+                    <h3>Journal Summary Plots</h3>
                     <hr>
                     <div class="plots">
                       {% if 'plots' in response and 'j_prot_plot' in response['plots'] %}
@@ -103,7 +103,7 @@
                         <img id="a_year_plot" class="plot" src="data:image/png;base64,{{ response['plots']['a_year_plot'] }}"/>
                         <br><hr>
                       {% else %}
-                        <p>Plots not available for only one article.</p>
+                        <p>Journal summary plots not available for only one article.</p>
                       {% endif %}
                     </div>
                   {% endif %}
