@@ -50,7 +50,7 @@
               <h1>PPaxe Analysis</h1>
               <hr>
               <b>Job identifier: </b> {{ response['job_id'] }}<br>
-              <b>Link with job results:</b> <a href="https://compgen.bio.ub.edu/PPaxe/job/{{ response['job_id'] }}">https://compgen.bio.ub.edu/PPaxe/job/{{ response['job_id'] }}</a><br>
+              <b>Link with job results:</b> <a href="{{ response['URL_BASE'] }}/job/{{ response['job_id'] }}" target="_blank">{{ response['URL_BASE'] }}/job/{{ response['job_id'] }}</a> <br>
               <b>Date: </b> {{ response['today'] }}<br>
               <b>Database: </b> {{ response['database'] }}<br>
               <b>PubMed Identifiers: </b> <br>
@@ -86,9 +86,9 @@
                   <pdf:nextpage />
                   <!-- Plots -->
                     <div class="plots">
-                      {% if 'plots' in response %}
-                        <img id="network_plot" class="plot" src="data:image/png;base64,{{ response['plots']['network_plot'] }}"/>
-                        <pdf:nextpage />
+                      <img id="network_plot" class="plot" src="data:image/png;base64,{{ response['plots']['network_plot'] }}"/>
+                      <pdf:nextpage />
+                      {% if 'plots' in response and 'j_prot_plot' in response['plots'] %}
                         <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
                         <br><pdf:nextpage />
                         <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot'] }}"/>

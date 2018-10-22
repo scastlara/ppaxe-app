@@ -210,6 +210,7 @@ def create_response(job_id, summary, query):
     """
     response = dict()
     response['job_id'] = job_id
+    response['URL_BASE'] = os.environ.get('URL_BASE', '')
     response['nints']  = summary.graphsummary.numinteractions
     response['nprots'] = summary.protsummary.totalprots
     if response['nprots'] > 0:
@@ -229,13 +230,13 @@ def create_response(job_id, summary, query):
         # JSON graph
         response['graph'] = summary.graphsummary.graph_to_json()
         # Plots
+        response['plots'] = dict()
+        response['plots']['network_plot'] = summary.graphsummary.make_networkx_plot().getvalue().encode("base64").strip()
         if len(query.articles) > 1:
-            response['plots'] = dict()
             response['plots']['j_int_plot'], response['plots']['j_prot_plot'], response['plots']['a_year_plot'] = summary.journal_plots()
             response['plots']['j_prot_plot'] = response['plots']['j_prot_plot'].getvalue().encode("base64").strip()
             response['plots']['j_int_plot']  = response['plots']['j_int_plot'].getvalue().encode("base64").strip()
             response['plots']['a_year_plot'] = response['plots']['a_year_plot'].getvalue().encode("base64").strip()
-            response['plots']['network_plot'] = summary.graphsummary.make_networkx_plot().getvalue().encode("base64").strip()
         response['today'] = datetime.date.today()
         response['database'] = query.database
         with app.app_context():
@@ -358,7 +359,8 @@ def job(job_id):
     template = "progress.html"
     response = dict()
     response['URL_BASE'] = os.environ.get('URL_BASE', '')
-    print(os.environ.get('URL_BASE', ''))
+    response['CITATION'] = CITATION
+    response['CITATION_SHORT'] = CITATION_SHORT
     if progress < 4:
         # Not done yet
         # Redirect to progress page

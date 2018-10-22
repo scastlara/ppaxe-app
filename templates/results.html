@@ -95,7 +95,7 @@
                     <h3>Plots</h3>
                     <hr>
                     <div class="plots">
-                      {% if 'plots' in response %}
+                      {% if 'plots' in response and 'j_prot_plot' in response['plots'] %}
                         <img id="j_prot_plot" class="plot" src="data:image/png;base64,{{ response['plots']['j_prot_plot'] }}"/>
                         <br><hr>
                         <img id="j_int_plot" class="plot"  src="data:image/png;base64,{{ response['plots']['j_int_plot']}}"/>
