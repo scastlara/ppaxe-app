@@ -103,6 +103,11 @@
                 For a thorough explanation of how <b>PPaxe</b> works, go to the <a href="{{ url_for('tutorial') }}">tutorial</a>.
                 To see how <b>PPaxe</b> retrieves interactions from the literature, refer to the <a href="/about">about</a> section.
               </p>
+              {% if 'CITATION_SHORT' in response and response['CITATION_SHORT'] %}
+                <hr>
+                If you find PPaxe useful, please cite us: <br>
+                {{ response['CITATION_SHORT'] }}
+              {% endif %}
             </div>
           </div>
 

@@ -14,12 +14,16 @@
 
           	<blockquote class="progress-block">
           		<p> 
-          			This page will be updated automatically once your results are ready, you may leave it at any time and check them again by following this link, bookmark it for accessing it later: <a href="https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}" target="_blank">https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}</a> . 
+					  This page will be updated automatically once your results are ready, 
+					  you may leave it at any time and check them again by following this link, 
+					  bookmark it for accessing it later: 
+					  <a href="{{ url_for('job', job_id=response['job_id']) }}" target="_blank">{{ response['URL_BASE'] }}{{ url_for('job', job_id=response['job_id']) }}</a> . 
 
           		</p>
           		<p>
-          			The link will be sent by email (if requested) but keep the link in case the connection expires (<a href="https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}" target="_blank">https://compgen.bio.ub.edu/{{ url_for('job', job_id=response['job_id']) }}</a>). Please, remember that your results will only be kept for <b>one week</b>.
-          		</p>
+					  The link will be sent by email (if requested) but keep the link in case the connection expires 
+					  (<a href="{{ url_for('job', job_id=response['job_id']) }}" target="_blank">{{ response['URL_BASE'] }}{{ url_for('job', job_id=response['job_id']) }}</a>). Please, remember that your results will only be kept for <b>one week</b>.
+          		</p>0
           	</blockquote>
           	<hr>
           	<div class="progress-row row text-pixel">

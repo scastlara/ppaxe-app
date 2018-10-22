@@ -83,6 +83,8 @@ core.NLP = StanfordCoreNLP(os.environ.get('PPAXE_CORENLP','http://127.0.0.1:9000
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 NJOBS = int(os.environ.get('PPAXE_THREADS', 4))
+CITATION = False
+CITATION_SHORT = False
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
 
 # FUNCTIONS
@@ -308,6 +310,9 @@ def home_form():
     response    = dict()
     response['search'] = False
     template = "base.html"
+    response['URL_BASE'] = os.environ.get('URL_BASE', '')
+    response['CITATION'] = CITATION
+    response['CITATION_SHORT'] = CITATION_SHORT
     if 'file' in request.files:
         database = "PLAIN-TEXT"
         template = "progress.html"
@@ -352,6 +357,8 @@ def job(job_id):
     progress, percentage = get_progress(db, job_id)
     template = "progress.html"
     response = dict()
+    response['URL_BASE'] = os.environ.get('URL_BASE', '')
+    print(os.environ.get('URL_BASE', ''))
     if progress < 4:
         # Not done yet
         # Redirect to progress page
@@ -435,4 +442,7 @@ def about():
     '''
     About page
     '''
-    return render_template('about.html')
+    response = dict()
+    response['CITATION'] = CITATION
+    response['CITATION_SHORT'] = CITATION_SHORT
+    return render_template('about.html', response=response)

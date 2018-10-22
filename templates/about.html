@@ -68,6 +68,13 @@
                 </tr>
               </tbody>
             </table>
+
+            {% if 'CITATION' in response and response['CITATION'] %}
+            <hr>
+            <h3>Publications</h3>
+              {{ response['CITATION'] }}
+            {% endif %}
+
             <br>
             <br>
 
