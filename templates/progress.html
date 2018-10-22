@@ -62,7 +62,7 @@
 	function doAjax() {
 	    $.ajax({
 	            type: 'GET',
-	            url: '/progress/{{ response["job_id"] }}',
+	            url: '{{ url_for('progress', job_id=response['job_id']) }}',
 	            success: function (data) {
 		            if (data.progress == 1) {
 		            	console.log(data.percentage)
@@ -84,7 +84,7 @@
 		            	$("#2").show();
 		            	$("#3").show();
 		            	$("#4").show();
-		            	document.location.href = '/job/{{ response["job_id"] }}';
+		            	document.location.href = '{{ url_for('job', job_id=response['job_id']) }}';
 		            }
 		        },
 	            complete: function (data) {
