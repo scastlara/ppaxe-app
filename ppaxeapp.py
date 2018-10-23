@@ -82,7 +82,6 @@ class PrefixMiddleware(object):
 core.NLP = StanfordCoreNLP(os.environ.get('PPAXE_CORENLP','http://127.0.0.1:9000'))
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
-NJOBS = int(os.environ.get('PPAXE_THREADS', 4))
 CITATION = False
 CITATION_SHORT = False
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
@@ -136,7 +135,7 @@ def send_mail(response, email_to):
         msg = get_mail_msg(mail, email_to, 'PPaxe results for job %s' % response['job_id'], response['pdf-plain'])
         server.sendmail(mail, email_to, msg.as_string())
     except Exception as err:
-        print(err)
+        pass
 
 
 
@@ -211,6 +210,7 @@ def create_response(job_id, summary, query):
     response = dict()
     response['job_id'] = job_id
     response['URL_BASE'] = os.environ.get('URL_BASE', '')
+    response['APP_BASE'] = os.environ.get('APP_BASE', '')
     response['nints']  = summary.graphsummary.numinteractions
     response['nprots'] = summary.protsummary.totalprots
     if response['nprots'] > 0:
