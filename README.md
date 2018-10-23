@@ -1,28 +1,29 @@
-# ppaxe-app
-Web application for retrieving protein-protein interactions using ppaxe.
+# PPaxe-app
+
+<img width="350" src="static/logo.png"/>
+
+Web application for retrieving protein-protein interactions using PPaxe.
+
+## Availability
+
+> **Visit the [PPaxe web application](https://compgen.bio.ub.edu/PPaxe) to use PPaxe on the web.**
+
+Download PPaxe-app by using the docker image hosted on [Docker Hub](https://hub.docker.com/r/compgenlabub/ppaxe-app/).
+
+## PPaxe backend
+
+PPaxe-app uses PPaxe to retrieve protein-protein interactions from PubMed and PubMedCentral articles. In order to see how it works, or how to install the standalone python modules and command-line tool, see: [PPaxe repository](https://github.com/scastlara/ppaxe).
 
 ### Screenshot
 
 <img src="https://raw.githubusercontent.com/scastlara/ppaxe-app/master/static/example-screenshot.png"  width=800/>
 
 
-### Creating sqlite database
+## Authors
 
-```py
-import sqlite3
+* **Sergio Castillo-Lara** - at the [Computational Genomics Lab](https://compgen.bio.ub.edu)
 
-db = sqlite3.connect('mydb')
-cursor = db.cursor();
 
-cursor.execute("""
-CREATE TABLE jobs (
-  id integer PRIMARY KEY, 
-  date timestamp,
-  updated timestamp,
-  progress integer,
-  percentage numeric
-);
-cursor.commit();
+## License
 
-""")
-```
+This project is licensed under the GNU GPL3 license - see the [LICENSE](LICENSE) file for details
