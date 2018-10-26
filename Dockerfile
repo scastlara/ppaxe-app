@@ -32,9 +32,12 @@ RUN apt-get update \
                git \
                libpq-dev \
                make \
+               apt-utils \
                python-pip \
                python2.7 \
                python2.7-dev \
+               sqlite3 \
+               libsqlite3-dev \
                wget \
                ssh \
                unzip \
@@ -42,16 +45,20 @@ RUN apt-get update \
     && apt-get autoremove \
     && apt-get clean
 
+RUN pip install --upgrade pip
 RUN pip install -U "pycorenlp==0.3.0"
 RUN pip install -U "scipy==0.17.0"
 RUN pip install -U "sklearn==0.0"
 RUN pip install -U "requests==2.4.3"
 RUN pip install -U "scikit-learn==0.18.2"
 RUN pip install -U "matplotlib==2.0.2"
+RUN pip install -U "networkx==2.2"
+RUN pip install -U "pysqlite"
+RUN pip install -U "uuid"
 
 RUN wget https://nlp.stanford.edu/software/stanford-corenlp-full-2017-06-09.zip \
     && unzip stanford-corenlp-full-2017-06-09.zip \
-    && wget https://www.dropbox.com/s/ec3a4ey7s0k6qgy/FINAL-ner-model.AImed%2BMedTag%2BBioInfer.ser.gz?dl=0 \
+    && wget https://compgen.bio.ub.edu/datasets/PPaxe_files/FINAL-ner-model.AImed%2BMedTag%2BBioInfer.ser.gz \
          -O /stanford-corenlp-full-2017-06-09/FINAL-ner-model.AImed+MedTag+BioInfer.ser.gz \
     && wget https://nlp.stanford.edu/software/stanford-english-corenlp-2017-06-09-models.jar \
          -O /stanford-corenlp-full-2017-06-09/stanford-english-corenlp-2017-06-09-models.jar 
@@ -64,7 +71,7 @@ RUN sed -i 's%\.\./%/stanford-corenlp-full-2017-06-09/%' \
 
 WORKDIR /ppaxe
 
-RUN wget https://www.dropbox.com/s/t6qcl19g536c0zu/RF_scikit.pkl?dl=0 \
+RUN wget https://compgen.bio.ub.edu/datasets/PPaxe_files/RF_scikit.pkl \
       -O ./ppaxe/data/RF_scikit.pkl \
     && pip install ./
 
@@ -83,7 +90,7 @@ RUN mkdir -vp /ppaxe/install \
 
 WORKDIR /ppaxe
     
-RUN echo "# Installing web app..." \
+RUN echo "# Downloading and installing web-app... " \
     && git --no-pager clone https://github.com/scastlara/ppaxe-app.git
 #        # repo clone at https://github.com/CompGenLabUB/ppaxe-app.git
 
@@ -91,7 +98,8 @@ RUN addgroup --gid 1000 www \
     && adduser --gid 1000 --uid 1000 \
                --shell /bin/bash \
                --no-create-home --system www \
-    && mkdir -vp /ppaxe/logs
+    && mkdir -vp /ppaxe/logs \
+                 /ppaxe/ppaxe-app/tmp
 
 #    
 # preparing script to launch container services
@@ -108,8 +116,9 @@ if __name__ == "__main__":\n\
 ## System params... set up your own \n\
 ##
 ENV PPAXE_DEBUG=0
-ENV PPAXE_THREADS=4
+# ENV PPAXE_THREADS=4    # No longer used on the job control version of ppaxe
 ENV GUNICORN_THREADS=4
+ENV GUNICORN_TIMEOUT=600
 ENV CORENLP_THREADS=4
 ENV CORENLP_MAXMEM=4g
 ##
@@ -118,7 +127,11 @@ ENV CORENLP_MAXMEM=4g
 ENV PPAXE_EUSER="www"
 ENV PPAXE_EPASSW="blabla"
 ENV PPAXE_EMAIL="www@localhost"
-
+##
+## JOB links URL base... set up your own \n\
+##
+ENV URL_BASE=''
+ENV APP_BASE=''
 
 # Installing gunicorn
 RUN pip install gunicorn
@@ -131,7 +144,7 @@ export SPD="/stanford-corenlp-full-2017-06-09"\n\
 \n\
 export FLASK_APP=/ppaxe/ppaxe-app/ppaxeapp.py\n\
 export PPAXE_CORENLP="http://127.0.0.1:9000"\n\
-export PPAXE_DEBUG PPAXE_THREADS PPAXE_EUSER PPAXE_EPASSW PPAXE_EMAIL\n\
+export PPAXE_DEBUG URL_BASE APP_BASE PPAXE_EUSER PPAXE_EPASSW PPAXE_EMAIL\n\
 \n\
 if [ "$PPAXE_DEBUG" = "1" ];\n\
   then\n\
@@ -145,7 +158,7 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
     cd /ppaxe/ppaxe-app;\n\
     gunicorn -w ${GUNICORN_THREADS} \\\n\
              --bind=127.0.0.1:5000  \\\n\
-             --timeout 600 \\\n\ 
+             --timeout ${GUNICORN_TIMEOUT} \\\n\ 
              ppaxeapp:app \\\n\ 
              > /ppaxe/logs/gunicorn.log \\\n\
              2> /ppaxe/logs/gunicorn.err; \n\
@@ -159,7 +172,7 @@ if [ "$PPAXE_DEBUG" = "1" ];\n\
     cd /ppaxe/ppaxe-app;\n\
     gunicorn -w ${GUNICORN_THREADS} \\\n\
              --bind=127.0.0.1:5000  \\\n\
-             --timeout 600 \\\n\ 
+             --timeout ${GUNICORN_TIMEOUT} \\\n\ 
              ppaxeapp:app \\\n\ 
              2> /dev/null 1>&2; \n\
   fi\n' \
