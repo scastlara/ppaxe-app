@@ -93,10 +93,11 @@
           As of right now, PPaxe does not have a built-in species recognizer, that is, PPaxe can't decide from which organism a retrieved interaction is. 
         </p>
         <p class="text-pixel">
-          However, when performing PubMed queries, one can restrict the result to those articles with a particular MeSH term (which could include one or more organisms). By doing this, researchers can limit the articles to analyze to only those that refer to a particular species. 
+            Available options for standard and advanced PubMed queries are described at <a href="https://www.ncbi.nlm.nih.gov/books/NBK3827/" target="_blank">NCBI tutorial</a>. 
+            However, when performing PubMed queries, one can restrict the result to those articles with a particular MeSH term (which could include one or more organisms). By doing this, researchers can limit the articles to analyze to only those that refer to a particular species. 
         </p>
         <p class="text-pixel">
-          One PubMed query that could be performed is: <it>CERKL AND Humans[Mesh]</it>. This query would search PubMed for the term "CERKL" in all the fields, but restricting the articles to only those with the MeSH term "Humans". To learn more about MeSH terms, please visit: <a href="https://www.nlm.nih.gov/mesh/" target="_blank">https://www.nlm.nih.gov/mesh/</a>.
+          One PubMed query that can be performed is: <it>CERKL AND Humans[Mesh]</it>. This query would search PubMed for the term "CERKL" in all the fields, but restricting the articles to only those with the MeSH term "Humans". To learn more about MeSH terms, please visit: <a href="https://www.nlm.nih.gov/mesh/" target="_blank">https://www.nlm.nih.gov/mesh/</a>.
         </p>
         <hr>
 
@@ -128,11 +129,15 @@
 
 
         <p class="text-pixel">
-          PPaxe also provides a <strong>Graph visualization</strong>. The "Center" button resets the visualization:
+          PPaxe also provides a <strong>Graph visualization</strong>. 
         </p>
         <a target="_blank" href="{{ url_for('static', filename='tut5.png') }}">
           <img class="tut-img" width="1000px" src="{{ url_for('static', filename='tut5.png') }}">
         </a>
+        <br>
+        <p class="text-pixel">
+            The "Center" button resets the visualization. The Layout dropdown menu allows users to change the layout of the network. And the Export table and Export png allows users to save the network as a tabular file, and as a PNG image respectively.
+        </p>
 
         <br>
         <p class="text-pixel">
