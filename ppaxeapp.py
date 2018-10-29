@@ -129,7 +129,9 @@ def send_mail(response, email_to):
         user = os.environ.get('PPAXE_EUSER', "dummy")
         passw = os.environ.get('PPAXE_EPASSW', "ymmud")
         mail = os.environ.get('PPAXE_EMAIL', "dummy@email.com")
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server = smtplib.SMTP(
+            os.environ.get('PPAXE_SMTP_SERVER', 'smtp.gmail.com'), 
+            os.environ.get('PPAXE_SMTP_PORT', 587))
         server.starttls()
         server.login(user, passw)
         msg = get_mail_msg(mail, email_to, 'PPaxe results for job %s' % response['job_id'], response['pdf-plain'])
