@@ -88,7 +88,7 @@ CITATION = """
     <br>
     S. Castillo-Lara, J.F. Abril. 
     <br>
-    <i>Bioinformatics</i>, AOP December 2018, <a href="https://doi.org/10.1093/bioinformatics/bty988" target="_blank">doi:bty988</a>.
+    <i>Bioinformatics</i>, AOP November 2018, <a href="https://doi.org/10.1093/bioinformatics/bty988" target="_blank">doi:bty988</a>.
 </span>
 """
 CITATION_SHORT = """
@@ -97,7 +97,7 @@ CITATION_SHORT = """
     <br>
     S. Castillo-Lara, J.F. Abril. 
     <br>
-    <i>Bioinformatics</i>, AOP December 2018.
+    <i>Bioinformatics</i>, AOP November 2018.
 </span>
 """
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
