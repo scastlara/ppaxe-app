@@ -18,7 +18,7 @@
 
 .text-pixel {
   font-family: Courier New !important;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .tut-img {
@@ -197,7 +197,7 @@ a.info-tooltip {
 .panel-body {
   font-family: Courier New !important;
   font-weight: normal !important;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .btn {
@@ -267,6 +267,10 @@ html {
 }
 
 #quick-help-body {
+  min-height: 501.4px;
+}
+
+#main-form-body {
   min-height: 501.4px;
 }
 
@@ -677,3 +681,10 @@ blockquote {
   }
 }
 
+.citation-short {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 14px;
+  padding-left: 14px;
+  border-left: solid 4px #EAEAEA;
+}

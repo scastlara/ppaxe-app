@@ -33,7 +33,7 @@
 
       <div class="content animate-bottom about">
         <div class="row">
-          <div class="col-sm-5">
+          <div class="col-sm-7">
             <p>
               <b>PPaxe</b> was developed at the <a target="_blank" href="https://compgen.bio.ub.edu">Computational Genomics Lab, UB</a>.
               You can find the code of the website <a target="_blank" href="https://github.com/scastlara/ppaxe-app">here</a>, and for <b>PPaxe</b> <a target="_blank" href="https://github.com/scastlara/ppaxe">here</a>.
@@ -69,20 +69,9 @@
               </tbody>
             </table>
 
-            {% if 'CITATION' in response and response['CITATION'] %}
-            <hr>
-            <h3>Publications</h3>
-              {{ response['CITATION'] }}
-            {% endif %}
-
-            <br>
-            <br>
-
           </div> <!-- col1 -->
-          <div class="col-sm-2">
-          </div>
+
           <div class="col-sm-5">
-            <hr>
             <a href="https://ub.edu" title="Go to University of Barcelona website" target="_blank">
               <img alt="UB site" class="about-logo" src="{{ url_for('static', filename='ub_logo.png') }}">
             </a>
@@ -100,6 +89,12 @@
           </div>
 
         </div><!-- row -->
+
+        {% if 'CITATION' in response and response['CITATION'] %}
+            <hr>
+            <h3>Publications</h3>
+              {{ response['CITATION']|safe }}
+            {% endif %}
       </div>
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>

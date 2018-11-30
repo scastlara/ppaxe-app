@@ -10,6 +10,18 @@ Web application for retrieving protein-protein interactions using PPaxe.
 
 Download PPaxe-app by using the docker image hosted on [Docker Hub](https://hub.docker.com/r/compgenlabub/ppaxe-app/).
 
+## Citation
+
+# Cite
+
+```
+S. Castillo-Lara, J.F. Abril
+PPaxe: easy extraction of protein occurrence and interactions from the scientific literature 
+Bioinformatics, AOP November 2018, bty988.
+```
+* [link to the published paper](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty988/5221011)
+
+
 ## PPaxe backend
 
 PPaxe-app uses PPaxe to retrieve protein-protein interactions from PubMed and PubMedCentral articles. In order to see how it works, or how to install the standalone python modules and command-line tool, see: [PPaxe repository](https://github.com/scastlara/ppaxe).

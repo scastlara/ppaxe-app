@@ -82,8 +82,24 @@ class PrefixMiddleware(object):
 core.NLP = StanfordCoreNLP(os.environ.get('PPAXE_CORENLP','http://127.0.0.1:9000'))
 app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
-CITATION = False
-CITATION_SHORT = False
+CITATION = """
+<span class="citation">
+    <a href="https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty988/5221011" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
+    <br>
+    S. Castillo-Lara, J.F. Abril. 
+    <br>
+    <i>Bioinformatics</i>, AOP December 2018, <a href="https://doi.org/10.1093/bioinformatics/bty988" target="_blank">doi:bty988</a>.
+</span>
+"""
+CITATION_SHORT = """
+<span class="citation-short">
+    <a href="https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty988/5221011" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
+    <br>
+    S. Castillo-Lara, J.F. Abril. 
+    <br>
+    <i>Bioinformatics</i>, AOP December 2018.
+</span>
+"""
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix=environ.get('SCRIPT_NAME', ''))
 
 # FUNCTIONS

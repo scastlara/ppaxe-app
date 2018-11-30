@@ -43,7 +43,7 @@
           <!-- MAIN FORM -->
           <div class="panel noborder panel-warning col-sm-6">
             <div class="panel-heading">Retrieve interactions from articles</div>
-            <div class="panel-body">
+            <div id="main-form-body" class="panel-body">
               <div id="query-form-btn" class="btn btn-default"><img id="pubmedqueryicon" src="{{ url_for('static', filename='pubmedq.png') }}"> INPUT PUBMED QUERY</div>
               <div id="identifiers-num"><span id="identifiers-num-span" class="num-cool">0</span> identifiers</div>
               <form id="ppaxeform" action="{{ url_for('home_form') }}" method="post" enctype="multipart/form-data">
@@ -53,7 +53,7 @@
 	              </div>
                 <br>
                 <div class="form-group">
-                  <label for="file">Select plain-text file:</label>
+                  <label for="file">or Select plain-text file:</label>
                   <input id="file" type="file" name="file">
                 </div>
                 <hr>
@@ -105,8 +105,8 @@
               </p>
               {% if 'CITATION_SHORT' in response and response['CITATION_SHORT'] %}
                 <hr>
-                If you find PPaxe useful, please cite us: <br>
-                {{ response['CITATION_SHORT'] }}
+                If you find PPaxe useful, please <b>cite us</b>: <br>
+                {{ response['CITATION_SHORT']|safe }}
               {% endif %}
             </div>
           </div>
@@ -131,7 +131,7 @@
     </div> <!--content-->
 
 
-    <div id="query-form" title="Query PubMed">
+    <div id="query-form" style="display: none" title="Query PubMed">
       <p class="text-pixel">Write PubMed Query to get the articles here:</p>
       <form id="pmqueryform">
         <textarea class="form-control" rows="2" name="pmquery" id="pmquery"></textarea>
