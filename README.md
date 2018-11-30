@@ -12,8 +12,6 @@ Download PPaxe-app by using the docker image hosted on [Docker Hub](https://hub.
 
 ## Citation
 
-# Cite
-
 ```
 S. Castillo-Lara, J.F. Abril
 PPaxe: easy extraction of protein occurrence and interactions from the scientific literature 
