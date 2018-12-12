@@ -84,7 +84,7 @@ app = Flask(__name__) # create the application instance
 app.wsgi_app = ReverseProxied(app.wsgi_app)
 CITATION = """
 <span class="citation">
-    <a href="https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty988/5221011" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
+    <a href=" https://doi.org/10.1093/bioinformatics/bty988" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
     <br>
     S. Castillo-Lara, J.F. Abril. 
     <br>
@@ -93,7 +93,7 @@ CITATION = """
 """
 CITATION_SHORT = """
 <span class="citation-short">
-    <a href="https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/bty988/5221011" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
+    <a href=" https://doi.org/10.1093/bioinformatics/bty988" target="_blank">PPaxe: easy extraction of protein occurrence and interactions from the scientific literature.</a>
     <br>
     S. Castillo-Lara, J.F. Abril. 
     <br>
